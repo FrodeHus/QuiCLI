@@ -1,0 +1,15 @@
+﻿namespace QuiCLI.Command
+{
+    internal class CommandDefinition(string name, string? description = null)
+    {
+        public string Name { get; init; } = name;
+        public string? Description { get; init; } = description;
+        public List<OptionDefinition> Options { get; init; } = [];
+        public List<CommandDefinition> SubCommands { get; init; } = [];
+
+        public OptionDefinition? GetOption(string name)
+        {
+            return Options.Find(o => o.Name == name);
+        }
+    }
+}
