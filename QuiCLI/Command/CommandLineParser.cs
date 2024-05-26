@@ -1,6 +1,6 @@
 ﻿namespace QuiCLI.Command;
 
-internal class CommandLineParser
+internal sealed class CommandLineParser
 {
     public CommandLineParser()
     {

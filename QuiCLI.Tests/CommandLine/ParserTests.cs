@@ -149,5 +149,20 @@ namespace QuiCLI.Tests.CommandLine
             Assert.Single(parsedCommands[0].Options);
             Assert.Equal(42.42, parsedCommands[0].Options[0].Value);
         }
+
+        [Fact]
+        public void CommandLineParser_HandleIntAsDoubles()
+        {
+            var commands = new CommandDataSource();
+            var command = new CommandDefinition("test");
+            command.AddDoubleOption("number1");
+            commands.AddCommand(command);
+            var commandLine = new string[] { "test", "--number1", "42" };
+            var parser = new CommandLineParser(commands);
+            var parsedCommands = parser.Parse(commandLine);
+            Assert.Single(parsedCommands);
+            Assert.Single(parsedCommands[0].Options);
+            Assert.Equal(42.0, parsedCommands[0].Options[0].Value);
+        }
     }
 }

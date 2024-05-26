@@ -1,6 +1,6 @@
 ﻿namespace QuiCLI.Command
 {
-    public class ParsedCommand
+    public sealed class ParsedCommand
     {
         public string Name { get; init; }
         public List<OptionValue> Options { get; } = [];

@@ -1,6 +1,6 @@
 ﻿namespace QuiCLI.Command
 {
-    internal class CommandDataSource
+    internal sealed class CommandDataSource
     {
         private readonly List<CommandDefinition> _commands;
 
