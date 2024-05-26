@@ -26,6 +26,7 @@ internal class CommandLineParser
 
             if (IsOption(arg))
             {
+                var command = commands[^1];
                 var option = GetOptionName(arg);
                 object? value;
                 if (!TryGetOptionValue(arg, out var optionValue) && i + 1 < args.Length
@@ -39,7 +40,7 @@ internal class CommandLineParser
                     value = optionValue;
                 }
 
-                value = EnsureValueType(arg, option, value ?? string.Empty);
+                value = EnsureValueType(command.Name, option, value ?? string.Empty);
                 commands[^1].AddOption(option, value);
             }
             else
@@ -63,7 +64,7 @@ internal class CommandLineParser
         {
             return true;
         }
-        return value;
+        return Convert.ChangeType(value, optionDefinition.ValueType);
 
     }
 
