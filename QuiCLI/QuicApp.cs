@@ -1,22 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using QuiCLI.Builder;
+using QuiCLI.Command;
 
-namespace QuiCLI
+namespace QuiCLI;
+
+public class QuicApp
 {
-    public class QuicApp
+    public required Dictionary<CommandDefinition, Func<IServiceProvider, object>> Commands
+    {
+        get; set;
+    }
+
+    public static QuicAppBuilder CreateBuilder()
+    {
+        return new QuicAppBuilder();
+    }
+
+    public void Run()
     {
 
-        public void Run()
-        {
+    }
+    public Task RunAsyc()
+    {
 
-        }
-        public Task RunAsyc()
-        {
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

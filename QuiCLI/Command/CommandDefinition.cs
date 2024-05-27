@@ -1,6 +1,6 @@
 ﻿namespace QuiCLI.Command
 {
-    internal sealed class CommandDefinition(string name, string? description = null)
+    public sealed class CommandDefinition(string name, string? description = null)
     {
         public string Name { get; init; } = name;
         public string? Description { get; init; } = description;
@@ -14,7 +14,7 @@
 
         public CommandDefinition AddIntegerOption(string name)
         {
-            Options.Add(new OptionDefinition { Name = name, ValueType = typeof(int)});
+            Options.Add(new OptionDefinition { Name = name, ValueType = typeof(int) });
             return this;
         }
 
