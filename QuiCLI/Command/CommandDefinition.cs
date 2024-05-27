@@ -1,9 +1,12 @@
-﻿namespace QuiCLI.Command
+﻿using System.Reflection;
+
+namespace QuiCLI.Command
 {
     public sealed class CommandDefinition(string name, string? description = null)
     {
         public string Name { get; init; } = name;
         public string? Description { get; init; } = description;
+        public MethodInfo? Method { get; set; }
         public List<OptionDefinition> Options { get; init; } = [];
         public List<CommandDefinition> SubCommands { get; init; } = [];
 

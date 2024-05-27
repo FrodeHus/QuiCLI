@@ -1,6 +1,6 @@
 ﻿using QuiCLI.Command;
 
-namespace QuiCLI.Tests.Builder
+namespace QuiCLI.Tests
 {
     internal class TestCommand
     {

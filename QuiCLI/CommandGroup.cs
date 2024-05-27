@@ -27,7 +27,9 @@ namespace QuiCLI
                 var commandAttribute = method.GetCustomAttribute<CommandAttribute>();
                 if (commandAttribute is not null)
                 {
-                    Commands.Add(new CommandDefinition(commandAttribute.Name), implementationFactory);
+                    Commands.Add(
+                        new CommandDefinition(commandAttribute.Name) { Method = method },
+                        implementationFactory);
                 }
             }
             return this;
