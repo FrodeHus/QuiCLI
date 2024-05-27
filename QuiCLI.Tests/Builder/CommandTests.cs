@@ -12,7 +12,7 @@ namespace QuiCLI.Tests.Builder
 
 
             // Act
-            builder.AddCommand("test", sp => new TestCommand());
+            builder.AddCommand(sp => new TestCommand());
             var app = builder.Build();
 
 

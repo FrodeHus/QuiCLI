@@ -1,4 +1,6 @@
 ﻿using QuiCLI.Command;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace QuiCLI.Builder;
 
@@ -11,10 +13,19 @@ public class QuicAppBuilder
         _serviceCollection = new QuicServiceCollection();
     }
 
-    public QuicAppBuilder AddCommand<TCommand>(string name, Func<IServiceProvider, TCommand> implementationFactory)
+    public QuicAppBuilder AddCommand<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] TCommand>(Func<IServiceProvider, TCommand> implementationFactory)
         where TCommand : class
     {
-        _commands.Add(new CommandDefinition(name), implementationFactory);
+        var methods = typeof(TCommand).GetMethods().Where(m => m.GetCustomAttribute<CommandAttribute>() is not null);
+
+        foreach (var method in methods)
+        {
+            var commandAttribute = method.GetCustomAttribute<CommandAttribute>();
+            if (commandAttribute is not null)
+            {
+                _commands.Add(new CommandDefinition(commandAttribute.Name), implementationFactory);
+            }
+        }
         return this;
     }
 
