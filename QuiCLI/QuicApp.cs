@@ -40,7 +40,7 @@ public class QuicApp
         if (result is Task task)
         {
             await task.ConfigureAwait(false);
-            var property = task.GetType().GetProperty("Result");
+            var property = Type.GetType("System.Threading.Tasks.Task")?.GetProperty("Result");
             return property?.GetValue(task);
         }
         return result;
