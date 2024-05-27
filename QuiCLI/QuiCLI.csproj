@@ -5,6 +5,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <IsTrimmable>true</IsTrimmable>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <Title>QuiCLI</Title>
+	  <Authors>frodehus</Authors>
+	  <Description>Lightweight framework for building CLI applications with the primary focus of being AOT-compatible.</Description>
+	  <PackageProjectUrl>https://github.com/FrodeHus/QuiCLI</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/FrodeHus/QuiCLI</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

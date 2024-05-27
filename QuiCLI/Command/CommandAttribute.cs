@@ -4,12 +4,12 @@
     public sealed class CommandAttribute : Attribute
     {
         public string Name { get; }
-        public string? Description { get; }
+        public string? Help { get; }
 
-        public CommandAttribute(string name, string? description = null)
+        public CommandAttribute(string name, string? help = null)
         {
             Name = name;
-            Description = description;
+            Help = help;
         }
     }
 }

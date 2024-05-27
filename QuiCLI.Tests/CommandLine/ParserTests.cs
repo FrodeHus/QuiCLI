@@ -26,13 +26,13 @@ namespace QuiCLI.Tests.CommandLine
         public void CommandLineParser_NullParse()
         {
             var parser = new CommandLineParser();
-            var commands = parser.Parse(null);
+            var commands = parser.Parse(null!);
             Assert.Empty(commands);
         }
         [Fact]
         public void CommandLineParser_NullElementParse()
         {
-            var commandLine = new string[] { "test", null, "test3" };
+            var commandLine = new string[] { "test", null!, "test3" };
             var parser = new CommandLineParser();
             var commands = parser.Parse(commandLine);
             Assert.Equal(2, commands.Count);

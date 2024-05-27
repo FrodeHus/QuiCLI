@@ -9,15 +9,16 @@ namespace QuiCLI.Tests.Builder
         {
             // Arrange
             var builder = new QuicAppBuilder();
-
-
-            // Act
-            builder.AddCommand(sp => new TestCommand());
             var app = builder.Build();
 
 
+            // Act
+            app.AddCommand(sp => new TestCommand());
+
+
             // Assert
-            Assert.Single(app.Commands);
+            Assert.Single(app.RootCommands.Commands);
+            Assert.Equal("test", app.RootCommands.Commands.First().Key.Name);
         }
     }
 }
