@@ -40,10 +40,15 @@ public class QuicApp
         if (result is Task task)
         {
             await task.ConfigureAwait(false);
-            var property = Type.GetType("System.Threading.Tasks.Task")?.GetProperty("Result");
+            var property = GetProperty("Result", task);
             return property?.GetValue(task);
         }
         return result;
+    }
+
+    private System.Reflection.PropertyInfo? GetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(string propertyName, T type)
+    {
+        return typeof(T).GetProperty(propertyName);
     }
 
     public void Run()
