@@ -9,5 +9,11 @@ namespace QuiCLI.Tests
         {
             return "Hello, world!";
         }
+
+        [Command("test2")]
+        public string Test2(string name, bool verbose)
+        {
+            return $"Hello, {name}!";
+        }
     }
 }

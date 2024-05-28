@@ -8,7 +8,6 @@ public class QuicApp
 {
     public required IServiceProvider ServiceProvider { get; init; }
     public CommandGroup RootCommands { get; init; } = new CommandGroup();
-    public Dictionary<string, CommandGroup> CommandGroups { get; init; } = [];
     public static QuicAppBuilder CreateBuilder()
     {
         return new QuicAppBuilder();
@@ -24,10 +23,9 @@ public class QuicApp
 
     public CommandGroup AddCommandGroup(string name)
     {
-        var group = new CommandGroup();
-        CommandGroups.Add(name, group);
-        return group;
+        return RootCommands.AddCommandGroup(name);
     }
+
     internal (CommandDefinition, object) GetCommandInstance(string name)
     {
         var command = RootCommands.Commands.FirstOrDefault(c => c.Key.Name == name);

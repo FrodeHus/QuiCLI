@@ -6,14 +6,14 @@ internal sealed class CommandLineParser
     {
     }
 
-    public CommandLineParser(CommandDataSource commands)
+    public CommandLineParser(CommandGroup commands)
     {
         _commands = commands;
     }
 
     private const string LongOptionPrefix = "--";
     private const string ShortOptionPrefix = "-";
-    private readonly CommandDataSource? _commands;
+    private readonly CommandGroup? _commands;
 
     public IList<ParsedCommand> Parse(string[] args)
     {
@@ -54,11 +54,16 @@ internal sealed class CommandLineParser
         return commands;
     }
 
-    private object EnsureValueType(string commandName, string optionName, object value)
+    private object EnsureValueType(string commandName, string parameterName, object value)
     {
-        var definition = _commands?.GetCommand(commandName);
+        if(_commands is null)
+        {
+            return value;
+        }
+
+        var (definition, _) = _commands.GetCommand(commandName);
         if (definition == null) return value;
-        var optionDefinition = definition.GetOption(optionName);
+        var optionDefinition = definition.GetParameter(parameterName);
         if (optionDefinition == null) return value;
         if (optionDefinition.IsFlag)
         {

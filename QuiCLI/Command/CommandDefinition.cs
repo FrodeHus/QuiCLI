@@ -6,43 +6,13 @@ namespace QuiCLI.Command
     {
         public string Name { get; init; } = name;
         public string? Description { get; init; } = description;
+        public required List<ParameterDefinition> Parameters { get; init; }
         public MethodInfo? Method { get; set; }
-        public List<OptionDefinition> Options { get; init; } = [];
-        public List<CommandDefinition> SubCommands { get; init; } = [];
 
-        public OptionDefinition? GetOption(string name)
+        public ParameterDefinition? GetParameter(string name)
         {
-            return Options.Find(o => o.Name == name);
+            return Parameters.Find(o => o.Name == name);
         }
 
-        public CommandDefinition AddIntegerOption(string name)
-        {
-            Options.Add(new OptionDefinition { Name = name, ValueType = typeof(int) });
-            return this;
-        }
-
-        public CommandDefinition AddStringOption(string name)
-        {
-            Options.Add(new OptionDefinition { Name = name, ValueType = typeof(string) });
-            return this;
-        }
-
-        public CommandDefinition AddBooleanOption(string name)
-        {
-            Options.Add(new OptionDefinition { Name = name, ValueType = typeof(bool), IsFlag = true });
-            return this;
-        }
-
-        public CommandDefinition AddDoubleOption(string name)
-        {
-            Options.Add(new OptionDefinition { Name = name, ValueType = typeof(double) });
-            return this;
-        }
-
-        public CommandDefinition AddOption(string name, Type type)
-        {
-            Options.Add(new OptionDefinition { Name = name, ValueType = type });
-            return this;
-        }
     }
 }

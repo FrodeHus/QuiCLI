@@ -11,28 +11,57 @@ namespace QuiCLI
             get;
         } = [];
 
-        public IEnumerable<CommandGroup> SubCommands
+        public Dictionary<string, CommandGroup> SubGroups
         {
             get;
         } = [];
 
+        public CommandGroup AddCommandGroup(string name)
+        {
+            var group = new CommandGroup();
+            SubGroups.Add(name, group);
+            return group;
+        }
 
-        public CommandGroup AddCommand<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] TCommand>(Func<IServiceProvider, TCommand> implementationFactory)
+        public (CommandDefinition, Func<IServiceProvider, object>) GetCommand(string name)
+        {
+            var kvp = Commands.FirstOrDefault(c => c.Key.Name == name);
+            return (kvp.Key, kvp.Value);
+        }
+
+        public IEnumerable<CommandDefinition> AddCommand<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] TCommand>(Func<IServiceProvider, TCommand> implementationFactory)
     where TCommand : class
         {
+            var addedCommands = new List<CommandDefinition>();
             var methods = typeof(TCommand).GetMethods().Where(m => m.GetCustomAttribute<CommandAttribute>() is not null);
-
             foreach (var method in methods)
             {
                 var commandAttribute = method.GetCustomAttribute<CommandAttribute>();
                 if (commandAttribute is not null)
                 {
+                    var parameters = GetParameters(method);
+                    var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Parameters = parameters.ToList() };
                     Commands.Add(
-                        new CommandDefinition(commandAttribute.Name) { Method = method },
+                        definition,
                         implementationFactory);
+                    addedCommands.Add(definition);
                 }
             }
-            return this;
+            return addedCommands;
+        }
+
+        private static IEnumerable<ParameterDefinition> GetParameters(MethodInfo method)
+        {
+            var parameters = method.GetParameters();
+            
+            foreach (var parameter in parameters)
+            {
+                yield return (parameter.ParameterType) switch
+                {
+                    Type t when t == typeof(bool) => new ParameterDefinition { Name = parameter.Name!, IsFlag = true },
+                    _ => new ParameterDefinition { Name = parameter.Name!, IsRequired = !parameter.HasDefaultValue, ValueType = parameter.ParameterType }
+                };
+            }
         }
     }
 }

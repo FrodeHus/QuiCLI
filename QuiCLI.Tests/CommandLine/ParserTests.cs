@@ -105,11 +105,8 @@ namespace QuiCLI.Tests.CommandLine
         [Fact]
         public void CommandLineParser_ParseFlags()
         {
-            var commands = new CommandDataSource();
-            commands.AddCommand(new CommandDefinition("test")
-            {
-                Options = [new OptionDefinition { Name = "flag1", IsFlag = true, ValueType = typeof(bool) }]
-            });
+            var commands = new CommandGroup();
+            commands.AddCommand(_ => new TestCommand());
             var commandLine = new string[] { "test", "--flag1" };
 
             var parser = new CommandLineParser(commands);
@@ -123,10 +120,8 @@ namespace QuiCLI.Tests.CommandLine
         [Fact]
         public void CommandLineParser_ParseNumericOptions()
         {
-            var commands = new CommandDataSource();
-            var command = new CommandDefinition("test");
-            command.AddIntegerOption("number1");
-            commands.AddCommand(command);
+            var commands = new CommandGroup();
+            var command = commands.AddCommand(_ => new TestCommand()).First();
             var commandLine = new string[] { "test", "--number1", "42" };
             var parser = new CommandLineParser(commands);
             var parsedCommands = parser.Parse(commandLine);
@@ -138,10 +133,8 @@ namespace QuiCLI.Tests.CommandLine
         [Fact]
         public void CommandLineParser_ParseDoubleOptions()
         {
-            var commands = new CommandDataSource();
-            var command = new CommandDefinition("test");
-            command.AddDoubleOption("number1");
-            commands.AddCommand(command);
+            var commands = new CommandGroup();
+            var command = commands.AddCommand(_ => new TestCommand()).First();
             var commandLine = new string[] { "test", "--number1", "42.42" };
             var parser = new CommandLineParser(commands);
             var parsedCommands = parser.Parse(commandLine);
@@ -153,16 +146,20 @@ namespace QuiCLI.Tests.CommandLine
         [Fact]
         public void CommandLineParser_HandleIntAsDoubles()
         {
-            var commands = new CommandDataSource();
-            var command = new CommandDefinition("test");
-            command.AddDoubleOption("number1");
-            commands.AddCommand(command);
+            var commands = new CommandGroup();
+            var command = commands.AddCommand(_ => new TestCommand()).First();
             var commandLine = new string[] { "test", "--number1", "42" };
             var parser = new CommandLineParser(commands);
             var parsedCommands = parser.Parse(commandLine);
             Assert.Single(parsedCommands);
             Assert.Single(parsedCommands[0].Options);
             Assert.Equal(42.0, parsedCommands[0].Options[0].Value);
+        }
+
+        [Fact]
+        public void CommandLineParser_ParseGroups()
+        {
+            
         }
     }
 }
