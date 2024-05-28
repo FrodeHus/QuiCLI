@@ -2,13 +2,12 @@
 {
     internal sealed class CommandDataSource
     {
-        private readonly List<CommandDefinition> _commands;
-
-        public CommandDataSource()
+        private readonly List<CommandDefinition> _commands = [];
+        private CommandGroup? RootGroup { get; init; }
+        public CommandDataSource(CommandGroup rootGroup)
         {
-            _commands = [];
+            RootGroup = rootGroup;
         }
-
         public void AddCommand(CommandDefinition command)
         {
             _commands.Add(command);
