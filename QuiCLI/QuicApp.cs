@@ -1,5 +1,6 @@
 ﻿using QuiCLI.Builder;
 using QuiCLI.Command;
+using QuiCLI.Internal;
 using System.Diagnostics.CodeAnalysis;
 
 namespace QuiCLI;
@@ -34,19 +35,12 @@ public class QuicApp
 
     internal async Task<object?> GetCommandOutput(object commandInstance, CommandDefinition definition)
     {
-        var result = definition.Method?.Invoke(commandInstance, null);
-        if (result is Task task)
+        if (definition.Method == null)
         {
-            await task.ConfigureAwait(false);
-            var property = GetProperty("Result", task);
-            return property?.GetValue(task);
+            throw new InvalidOperationException($"Method not found on command '{definition.Name}'");
         }
-        return result;
-    }
 
-    private System.Reflection.PropertyInfo? GetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(string propertyName, T type)
-    {
-        return typeof(T).GetProperty(propertyName);
+        return await Dispatcher.InvokeAsync(commandInstance, definition.Method.Name);
     }
 
     public void Run()
@@ -62,7 +56,7 @@ public class QuicApp
         {
             var (definition, instance) = GetCommandInstance(commands[0].Name);
             var result = await GetCommandOutput(instance, definition);
-            
+
             Console.WriteLine(result?.ToString());
         }
         else

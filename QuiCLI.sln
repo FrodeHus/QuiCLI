@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.34909.67
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuiCLI", "QuiCLI\QuiCLI.csproj", "{D1CB5A84-3474-40A8-BF58-D7B7D410E0B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuiCLI", "QuiCLI\QuiCLI.csproj", "{D1CB5A84-3474-40A8-BF58-D7B7D410E0B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuiCLI.Tests", "QuiCLI.Tests\QuiCLI.Tests.csproj", "{DA3C8731-E550-4CE6-A4C8-5588A31C70F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuiCLI.Tests", "QuiCLI.Tests\QuiCLI.Tests.csproj", "{DA3C8731-E550-4CE6-A4C8-5588A31C70F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{254D17BB-973E-4668-8910-ABBFB9D54862}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "Samples\SampleApp\SampleApp.csproj", "{768B6B4E-C2B4-409B-AEB3-81BA693B7B0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +25,16 @@ Global
 		{DA3C8731-E550-4CE6-A4C8-5588A31C70F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA3C8731-E550-4CE6-A4C8-5588A31C70F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA3C8731-E550-4CE6-A4C8-5588A31C70F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{768B6B4E-C2B4-409B-AEB3-81BA693B7B0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{768B6B4E-C2B4-409B-AEB3-81BA693B7B0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{768B6B4E-C2B4-409B-AEB3-81BA693B7B0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{768B6B4E-C2B4-409B-AEB3-81BA693B7B0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{768B6B4E-C2B4-409B-AEB3-81BA693B7B0B} = {254D17BB-973E-4668-8910-ABBFB9D54862}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7464D6E8-794F-49EA-A866-520C8FF8C78E}
