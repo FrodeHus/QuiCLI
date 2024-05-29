@@ -33,14 +33,9 @@ public class QuicApp
         return (parsedCommand.Definition, implementationFactory.Invoke(ServiceProvider));
     }
 
-    internal async Task<object?> GetCommandOutput(object commandInstance, CommandDefinition definition)
+    internal async Task<object?> GetCommandOutput(object commandInstance, ParsedCommand parsedCommand)
     {
-        if (definition.Method == null)
-        {
-            throw new InvalidOperationException($"Method not found on command '{definition.Name}'");
-        }
-
-        return await Dispatcher.InvokeAsync(commandInstance, definition.Method.Name);
+        return await Dispatcher.InvokeAsync(commandInstance, parsedCommand);
     }
 
     public void Run()
@@ -54,8 +49,8 @@ public class QuicApp
         var command = parser.Parse(Environment.GetCommandLineArgs().Skip(1).ToArray());
         if (command is not null)
         {
-            var (definition, instance) = GetCommandInstance(command);
-            var result = await GetCommandOutput(instance, definition);
+            var (_, instance) = GetCommandInstance(command);
+            var result = await GetCommandOutput(instance, command);
 
             Console.WriteLine(result?.ToString());
         }
