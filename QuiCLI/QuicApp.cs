@@ -1,5 +1,6 @@
 ﻿using QuiCLI.Builder;
 using QuiCLI.Command;
+using QuiCLI.Help;
 using QuiCLI.Internal;
 using System.Diagnostics.CodeAnalysis;
 
@@ -46,7 +47,7 @@ public class QuicApp
     {
 
         var parser = new CommandLineParser(RootCommands);
-        var command = parser.Parse(Environment.GetCommandLineArgs().Skip(1).ToArray());
+        var (command, group) = parser.Parse(Environment.GetCommandLineArgs().Skip(1).ToArray());
         if (command is not null)
         {
             var (_, instance) = GetCommandInstance(command);
@@ -56,10 +57,8 @@ public class QuicApp
         }
         else
         {
-            foreach (var cmd in RootCommands.Commands)
-            {
-                Console.WriteLine(cmd.Key.Name);
-            }
+            var helpBuilder = new HelpBuilder(group);
+            Console.WriteLine(helpBuilder.BuildHelp());
         }
     }
 }

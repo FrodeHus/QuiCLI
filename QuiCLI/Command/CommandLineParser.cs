@@ -2,10 +2,6 @@
 
 internal sealed class CommandLineParser
 {
-    public CommandLineParser()
-    {
-    }
-
     public CommandLineParser(CommandGroup rootCommandGroup)
     {
         _rootCommandGroup = rootCommandGroup;
@@ -13,13 +9,14 @@ internal sealed class CommandLineParser
 
     private const string LongOptionPrefix = "--";
     private const string ShortOptionPrefix = "-";
-    private readonly CommandGroup? _rootCommandGroup;
+    private readonly CommandGroup _rootCommandGroup;
     private CommandGroup? _currentCommandGroup;
 
-    public ParsedCommand? Parse(string[] args)
+    public (ParsedCommand?, CommandGroup) Parse(string[] args)
     {
         _currentCommandGroup = _rootCommandGroup;
-        if (args == null) return null;
+        if (args == null) return (null, _rootCommandGroup);
+
         args = args.Where(o => !string.IsNullOrWhiteSpace(o)).ToArray();
         ParsedCommand? command = null;
         for (var i = 0; i < args.Length; i++)
@@ -54,7 +51,7 @@ internal sealed class CommandLineParser
                 _currentCommandGroup = group;
             }
         }
-        return command;
+        return (command, _currentCommandGroup ?? _rootCommandGroup);
     }
 
     private object EnsureValueType(string commandName, string parameterName, object value)
