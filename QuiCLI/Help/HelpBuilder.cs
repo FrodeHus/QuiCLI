@@ -10,13 +10,18 @@ internal class HelpBuilder(CommandGroup rootCommandGroup)
     public string BuildHelp()
     {
         var sb = new StringBuilder();
+        var name = rootCommandGroup.Name ?? "<command>";
         sb.AppendLine("Usage:");
-        sb.AppendLine("  <command> [options]");
+        sb.AppendLine($" {name} [arguments]");
         sb.AppendLine();
         sb.AppendLine("Commands:");
         foreach (var command in rootCommandGroup.Commands)
         {
-            sb.AppendLine($"  {command.Key.Name}");
+            sb.Append($"\t{command.Key.Name}");
+            if (!string.IsNullOrWhiteSpace(command.Key.Description))
+            {
+                sb.AppendLine($"\t:\t{command.Key.Description}");
+            }
         }
 
         sb.AppendLine();
@@ -25,7 +30,7 @@ internal class HelpBuilder(CommandGroup rootCommandGroup)
             sb.AppendLine("Nested Commands:");
             foreach (var group in rootCommandGroup.SubGroups)
             {
-                sb.AppendLine($"  {group.Key}");
+                sb.AppendLine($"\t{group.Key}");
             }
         }
         return sb.ToString();
