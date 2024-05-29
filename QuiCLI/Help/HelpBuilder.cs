@@ -16,14 +16,17 @@ internal class HelpBuilder(CommandGroup rootCommandGroup)
         sb.AppendLine("Commands:");
         foreach (var command in rootCommandGroup.Commands)
         {
-            sb.AppendLine($"  {command.Key}");
+            sb.AppendLine($"  {command.Key.Name}");
         }
 
         sb.AppendLine();
-        sb.AppendLine("Nested Commands:");
-        foreach (var group in rootCommandGroup.SubGroups)
+        if (rootCommandGroup.SubGroups.Count > 0)
         {
-            sb.AppendLine($"  {group.Key}");
+            sb.AppendLine("Nested Commands:");
+            foreach (var group in rootCommandGroup.SubGroups)
+            {
+                sb.AppendLine($"  {group.Key}");
+            }
         }
         return sb.ToString();
     }
