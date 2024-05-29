@@ -6,17 +6,19 @@ internal sealed class CommandLineParser
     {
     }
 
-    public CommandLineParser(CommandGroup commands)
+    public CommandLineParser(CommandGroup rootCommandGroup)
     {
-        _commands = commands;
+        _rootCommandGroup = rootCommandGroup;
     }
 
     private const string LongOptionPrefix = "--";
     private const string ShortOptionPrefix = "-";
-    private readonly CommandGroup? _commands;
+    private readonly CommandGroup? _rootCommandGroup;
+    private CommandGroup? _currentCommandGroup;
 
     public IList<ParsedCommand> Parse(string[] args)
     {
+        _currentCommandGroup = _rootCommandGroup;
         if (args == null) return [];
         args = args.Where(o => !string.IsNullOrWhiteSpace(o)).ToArray();
         var commands = new List<ParsedCommand>();
@@ -44,12 +46,13 @@ internal sealed class CommandLineParser
                 value = EnsureValueType(command.Name, option, value ?? string.Empty);
                 commands[^1].AddOption(option, value);
             }
-            else
+            else if (TryGetCommandDefinition(arg, out var definition))
             {
-                if (IsDefinedCommand(arg))
-                {
-                    commands.Add(new ParsedCommand(arg));
-                }
+                commands.Add(new ParsedCommand(arg, definition));
+            }
+            else if (TryGetCommandGroup(arg, out var group))
+            {
+                _currentCommandGroup = group;
             }
         }
         return commands;
@@ -57,12 +60,12 @@ internal sealed class CommandLineParser
 
     private object EnsureValueType(string commandName, string parameterName, object value)
     {
-        if (_commands is null)
+        if (_rootCommandGroup is null)
         {
             return value;
         }
 
-        var (definition, _) = _commands.GetCommand(commandName);
+        var (definition, _) = _rootCommandGroup.GetCommand(commandName);
         if (definition == null) return value;
         var optionDefinition = definition.GetParameter(parameterName);
         if (optionDefinition == null) return value;
@@ -77,6 +80,18 @@ internal sealed class CommandLineParser
     private static bool IsOption(string arg)
     {
         return IsLongOption(arg) || IsShortOption(arg);
+    }
+
+    private bool TryGetCommandGroup(string groupName, out CommandGroup? group)
+    {
+        if (_currentCommandGroup == null)
+        {
+            group = null;
+            return false;
+        }
+
+        group = (_currentCommandGroup.Name == groupName) ? _currentCommandGroup : _currentCommandGroup.SubGroups.FirstOrDefault(g => g.Value.Name == groupName).Value;
+        return group != null;
     }
 
     private static bool IsShortOption(string arg)
@@ -123,9 +138,15 @@ internal sealed class CommandLineParser
         return LookAhead(args, index) && IsOption(args[index + 1]);
     }
 
-    private bool IsDefinedCommand(string name)
+    private bool TryGetCommandDefinition(string name, out CommandDefinition? definition)
     {
-        if (_commands == null) return true;
-        return _commands?.GetCommand(name) != null;
+        if (_currentCommandGroup == null)
+        {
+            definition = null;
+            return false;
+        }
+
+        (definition, _) = _currentCommandGroup.GetCommand(name);
+        return definition != null;
     }
 }

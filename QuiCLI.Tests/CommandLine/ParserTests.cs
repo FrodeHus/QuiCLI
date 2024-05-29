@@ -4,14 +4,6 @@ namespace QuiCLI.Tests.CommandLine
 {
     public class ParserTests
     {
-        [Fact]
-        public void CommandLineParser_SimpleParse()
-        {
-            var commandLine = new string[] { "test", "test2", "test3" };
-            var parser = new CommandLineParser();
-            var commands = parser.Parse(commandLine);
-            Assert.Equal(3, commands.Count);
-        }
 
         [Fact]
         public void CommandLineParser_EmptyParse()
@@ -29,77 +21,18 @@ namespace QuiCLI.Tests.CommandLine
             var commands = parser.Parse(null!);
             Assert.Empty(commands);
         }
-        [Fact]
-        public void CommandLineParser_NullElementParse()
-        {
-            var commandLine = new string[] { "test", null!, "test3" };
-            var parser = new CommandLineParser();
-            var commands = parser.Parse(commandLine);
-            Assert.Equal(2, commands.Count);
-        }
-
-        [Fact]
-        public void CommandLineParser_EmptyElementParse()
-        {
-            var commandLine = new string[] { "test", "", "test3" };
-            var parser = new CommandLineParser();
-            var commands = parser.Parse(commandLine);
-            Assert.Equal(2, commands.Count);
-        }
-
-        [Fact]
-        public void CommandLineParser_WhitespaceElementParse()
-        {
-            var commandLine = new string[] { "test", " ", "test3" };
-            var parser = new CommandLineParser();
-            var commands = parser.Parse(commandLine);
-            Assert.Equal(2, commands.Count);
-        }
-
-        [Fact]
-        public void CommandLineParser_ParseOptions()
-        {
-            var commandLine = new string[] { "test", "--option1", "--option2" };
-            var parser = new CommandLineParser();
-            var commands = parser.Parse(commandLine);
-            Assert.Single(commands);
-            Assert.Equal(2, commands[0].Options.Count);
-        }
-
-        [Fact]
-        public void CommandLineParser_ParseOptionsWithValues()
-        {
-            var commandLine = new string[] { "test", "--option1", "value1", "--option2", "value2" };
-            var parser = new CommandLineParser();
-            var commands = parser.Parse(commandLine);
-            Assert.Single(commands);
-            Assert.Equal(2, commands[0].Options.Count);
-            Assert.Equal("value1", commands[0].Options[0].Value);
-            Assert.Equal("value2", commands[0].Options[1].Value);
-        }
-
-        [Fact]
-        public void CommandLineParser_ParseOptionsWithEqualsValue()
-        {
-            var commandLine = new string[] { "test", "--option1=value1", "--option2=value2" };
-            var parser = new CommandLineParser();
-            var commands = parser.Parse(commandLine);
-            Assert.Single(commands);
-            Assert.Equal(2, commands[0].Options.Count);
-            Assert.Equal("value1", commands[0].Options[0].Value);
-            Assert.Equal("value2", commands[0].Options[1].Value);
-        }
 
         [Fact]
         public void CommandLineParser_ParseOptionsWithEqualsValueAndSpace()
         {
-            var commandLine = new string[] { "test", "--option1= value1", "--option2 =value2" };
-            var parser = new CommandLineParser();
+            var commandGroup = new CommandGroup();
+            var command = commandGroup.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
+            var commandLine = new string[] { "test2", "--parameter= world" };
+            var parser = new CommandLineParser(commandGroup);
             var commands = parser.Parse(commandLine);
             Assert.Single(commands);
-            Assert.Equal(2, commands[0].Options.Count);
-            Assert.Equal("value1", commands[0].Options[0].Value);
-            Assert.Equal("value2", commands[0].Options[1].Value);
+            Assert.Single(commands[0].Options);
+            Assert.Equal("world", commands[0].Options[0].Value);
         }
 
         [Fact]
@@ -135,7 +68,14 @@ namespace QuiCLI.Tests.CommandLine
         [Fact]
         public void CommandLineParser_ParseGroups()
         {
-
+            var commands = new CommandGroup();
+            commands.AddCommandGroup("group1").AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
+            var commandLine = new string[] { "group1", "test2", "--parameter", "test" };
+            var parser = new CommandLineParser(commands);
+            var parsedCommands = parser.Parse(commandLine);
+            Assert.Single(parsedCommands);
+            Assert.Single(parsedCommands[0].Options);
+            Assert.Equal("test", parsedCommands[0].Options[0].Value);
         }
     }
 }

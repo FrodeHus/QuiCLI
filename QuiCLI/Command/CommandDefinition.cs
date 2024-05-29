@@ -13,6 +13,5 @@ namespace QuiCLI.Command
         {
             return Parameters.Find(o => o.Name == name);
         }
-
     }
 }

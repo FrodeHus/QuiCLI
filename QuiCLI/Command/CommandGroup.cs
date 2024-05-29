@@ -3,8 +3,9 @@ using System.Reflection;
 
 namespace QuiCLI.Command
 {
-    public class CommandGroup
+    public class CommandGroup(string? name = null)
     {
+        public string? Name { get; init; } = name;
         public Dictionary<CommandDefinition, Func<IServiceProvider, object>> Commands
         {
             get;
@@ -17,7 +18,7 @@ namespace QuiCLI.Command
 
         public CommandGroup AddCommandGroup(string name)
         {
-            var group = new CommandGroup();
+            var group = new CommandGroup(name);
             SubGroups.Add(name, group);
             return group;
         }
