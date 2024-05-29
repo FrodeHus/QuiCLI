@@ -69,7 +69,8 @@ namespace QuiCLI.Command
                         Name = ConvertCamelCaseToParameterName(parameter.Name!),
                         InternalName = parameter.Name!,
                         IsRequired = !parameter.HasDefaultValue,
-                        ValueType = parameter.ParameterType
+                        ValueType = parameter.ParameterType,
+                        DefaultValue = parameter.HasDefaultValue ? parameter.DefaultValue : null
                     }
                 };
             }
