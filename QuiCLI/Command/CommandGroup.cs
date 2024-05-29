@@ -40,7 +40,7 @@ namespace QuiCLI.Command
                 if (commandAttribute is not null)
                 {
                     var parameters = GetParameters(method);
-                    var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Parameters = parameters.ToList() };
+                    var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Parameters = parameters.ToList(), Help = commandAttribute.Help };
                     Commands.Add(
                         definition,
                         implementationFactory);
