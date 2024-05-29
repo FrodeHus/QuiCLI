@@ -17,7 +17,7 @@ namespace QuiCLI.Tests.Builder
 
 
             // Assert
-            Assert.Single(app.RootCommands.Commands);
+            Assert.Equal(5, app.RootCommands.Commands.Count);
             Assert.Equal("test", app.RootCommands.Commands.First().Key.Name);
         }
     }

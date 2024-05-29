@@ -18,6 +18,7 @@ internal sealed class CommandLineParser
     public IList<ParsedCommand> Parse(string[] args)
     {
         if (args == null) return [];
+        args = args.Where(o => !string.IsNullOrWhiteSpace(o)).ToArray();
         var commands = new List<ParsedCommand>();
         for (var i = 0; i < args.Length; i++)
         {
@@ -56,7 +57,7 @@ internal sealed class CommandLineParser
 
     private object EnsureValueType(string commandName, string parameterName, object value)
     {
-        if(_commands is null)
+        if (_commands is null)
         {
             return value;
         }
@@ -111,7 +112,7 @@ internal sealed class CommandLineParser
 
         var parts = arg.Split("=", StringSplitOptions.RemoveEmptyEntries);
         value = parts[1].Trim();
-        
+
         return true;
     }
 
