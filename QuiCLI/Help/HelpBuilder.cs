@@ -10,9 +10,9 @@ internal class HelpBuilder(CommandGroup rootCommandGroup)
     public string BuildHelp()
     {
         var sb = new StringBuilder();
-        var name = rootCommandGroup.Name ?? "<command>";
+        var groupName = rootCommandGroup.Name ?? "";
         sb.AppendLine("Usage:");
-        sb.AppendLine($" {name} [arguments]");
+        sb.AppendLine($" {groupName} <command> [arguments]");
         sb.AppendLine();
         sb.AppendLine("Commands:");
         foreach (var command in rootCommandGroup.Commands)
