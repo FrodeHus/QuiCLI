@@ -27,10 +27,10 @@ public class QuicApp
         return RootCommands.AddCommandGroup(name);
     }
 
-    internal (CommandDefinition, object) GetCommandInstance(string name)
+    internal (CommandDefinition, object) GetCommandInstance(ParsedCommand parsedCommand)
     {
-        var command = RootCommands.Commands.FirstOrDefault(c => c.Key.Name == name);
-        return (command.Key, command.Value.Invoke(ServiceProvider));
+        var (_, implementationFactory) = parsedCommand.CommandGroup!.GetCommand(parsedCommand.Name);
+        return (parsedCommand.Definition, implementationFactory.Invoke(ServiceProvider));
     }
 
     internal async Task<object?> GetCommandOutput(object commandInstance, CommandDefinition definition)
@@ -54,7 +54,7 @@ public class QuicApp
         var command = parser.Parse(Environment.GetCommandLineArgs().Skip(1).ToArray());
         if (command is not null)
         {
-            var (definition, instance) = GetCommandInstance(command.Name);
+            var (definition, instance) = GetCommandInstance(command);
             var result = await GetCommandOutput(instance, definition);
 
             Console.WriteLine(result?.ToString());

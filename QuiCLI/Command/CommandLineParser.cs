@@ -47,7 +47,7 @@ internal sealed class CommandLineParser
             }
             else if (TryGetCommandDefinition(arg, out var definition))
             {
-                command = new ParsedCommand(arg, definition);
+                command = new ParsedCommand(arg, definition!, _currentCommandGroup!);
             }
             else if (TryGetCommandGroup(arg, out var group))
             {

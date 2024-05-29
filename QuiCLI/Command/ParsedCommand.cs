@@ -3,9 +3,10 @@
     public sealed class ParsedCommand
     {
         public string Name { get; init; }
-        public CommandDefinition? Definition { get; set; }
+        public CommandDefinition Definition { get; set; }
+        public CommandGroup CommandGroup { get; set; }
         public List<OptionValue> Options { get; } = [];
-        public ParsedCommand(string name, CommandDefinition? definition)
+        public ParsedCommand(string name, CommandDefinition definition, CommandGroup group)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -14,6 +15,7 @@
 
             Name = name;
             Definition = definition;
+            CommandGroup = group;
         }
 
         public void AddOption(string option, object value)
