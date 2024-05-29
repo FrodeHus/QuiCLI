@@ -1,8 +1,7 @@
-﻿using QuiCLI.Command;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace QuiCLI
+namespace QuiCLI.Command
 {
     public class CommandGroup
     {
@@ -53,15 +52,31 @@ namespace QuiCLI
         private static IEnumerable<ParameterDefinition> GetParameters(MethodInfo method)
         {
             var parameters = method.GetParameters();
-            
+
             foreach (var parameter in parameters)
             {
-                yield return (parameter.ParameterType) switch
+                yield return parameter.ParameterType switch
                 {
-                    Type t when t == typeof(bool) => new ParameterDefinition { Name = parameter.Name!, IsFlag = true },
-                    _ => new ParameterDefinition { Name = parameter.Name!, IsRequired = !parameter.HasDefaultValue, ValueType = parameter.ParameterType }
+                    Type t when t == typeof(bool) => new ParameterDefinition
+                    {
+                        Name = ConvertCamelCaseToParameterName(parameter.Name!),
+                        InternalName = parameter.Name!,
+                        IsFlag = true
+                    },
+                    _ => new ParameterDefinition
+                    {
+                        Name = ConvertCamelCaseToParameterName(parameter.Name!),
+                        InternalName = parameter.Name!,
+                        IsRequired = !parameter.HasDefaultValue,
+                        ValueType = parameter.ParameterType
+                    }
                 };
             }
+        }
+
+        private static string ConvertCamelCaseToParameterName(string name)
+        {
+            return string.Concat(name.Select((x, i) => i > 0 && char.IsUpper(x) ? "-" + x.ToString() : x.ToString())).ToLowerInvariant();
         }
     }
 }
