@@ -10,6 +10,7 @@ public class QuicApp
 {
     public required IServiceProvider ServiceProvider { get; init; }
     public CommandGroup RootCommands { get; init; } = new CommandGroup();
+    internal List<ParameterDefinition> GlobalArguments { get; init; } = [];
     public static QuicAppBuilder CreateBuilder()
     {
         return new QuicAppBuilder();

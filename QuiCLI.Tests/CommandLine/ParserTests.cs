@@ -14,8 +14,8 @@ namespace QuiCLI.Tests.CommandLine
             var parser = new CommandLineParser(commandGroup);
             var (parsedCommand, _) = parser.Parse(commandLine);
             Assert.NotNull(parsedCommand);
-            Assert.Single(parsedCommand.Options);
-            Assert.Equal("world", parsedCommand.Options[0].Value);
+            Assert.Single(parsedCommand.Arguments);
+            Assert.Equal("world", parsedCommand.Arguments[0].Value);
         }
 
         [Fact]
@@ -27,8 +27,8 @@ namespace QuiCLI.Tests.CommandLine
             var parser = new CommandLineParser(commands);
             var (parsedCommand, _) = parser.Parse(commandLine);
             Assert.NotNull(parsedCommand);
-            Assert.Single(parsedCommand.Options);
-            Assert.Equal("Foo", parsedCommand.Options[0].Value);
+            Assert.Single(parsedCommand.Arguments);
+            Assert.Equal("Foo", parsedCommand.Arguments[0].Value);
         }
 
         [Theory]
@@ -44,8 +44,8 @@ namespace QuiCLI.Tests.CommandLine
             var parser = new CommandLineParser(commands);
             var (parsedCommand, _) = parser.Parse(commandLine);
             Assert.NotNull(parsedCommand);
-            Assert.Single(parsedCommand.Options);
-            Assert.Equal(expected, parsedCommand.Options[0].Value);
+            Assert.Single(parsedCommand.Arguments);
+            Assert.Equal(expected, parsedCommand.Arguments[0].Value);
         }
 
         [Fact]
@@ -57,8 +57,8 @@ namespace QuiCLI.Tests.CommandLine
             var parser = new CommandLineParser(commands);
             var (parsedCommand, _) = parser.Parse(commandLine);
             Assert.NotNull(parsedCommand);
-            Assert.Single(parsedCommand.Options);
-            Assert.Equal("test", parsedCommand.Options[0].Value);
+            Assert.Single(parsedCommand.Arguments);
+            Assert.Equal("test", parsedCommand.Arguments[0].Value);
         }
     }
 }

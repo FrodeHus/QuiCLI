@@ -5,7 +5,7 @@
         public string Name { get; init; }
         public CommandDefinition Definition { get; set; }
         public CommandGroup CommandGroup { get; set; }
-        public List<OptionValue> Options { get; } = [];
+        public List<ArgumentValue> Arguments { get; } = [];
         public ParsedCommand(string name, CommandDefinition definition, CommandGroup group)
         {
             if (string.IsNullOrEmpty(name))
@@ -18,14 +18,14 @@
             CommandGroup = group;
         }
 
-        public void AddOption(string option, object value)
+        public void AddArgument(string argument, object value)
         {
-            if (string.IsNullOrEmpty(option))
+            if (string.IsNullOrEmpty(argument))
             {
-                throw new ArgumentException($"'{nameof(option)}' cannot be null or empty.", nameof(option));
+                throw new ArgumentException($"'{nameof(argument)}' cannot be null or empty.", nameof(argument));
             }
 
-            Options.Add(new OptionValue(option, value));
+            Arguments.Add(new ArgumentValue(argument, value));
         }
     }
 }

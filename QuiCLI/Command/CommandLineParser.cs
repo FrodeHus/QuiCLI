@@ -24,12 +24,12 @@ internal sealed class CommandLineParser
             var arg = args[i];
             if (string.IsNullOrWhiteSpace(arg)) continue;
 
-            if (command is not null && IsOption(arg))
+            if (command is not null && IsArgument(arg))
             {
-                var option = GetOptionName(arg);
+                var option = GetArgumentName(arg);
                 object? value;
-                if (!TryGetOptionValue(arg, out var optionValue) && i + 1 < args.Length
-                        && !IsNextOption(args, i))
+                if (!TryGetArgumentValue(arg, out var optionValue) && i + 1 < args.Length
+                        && !IsNextArgument(args, i))
                 {
                     value = args[i + 1];
                     i++;
@@ -40,7 +40,7 @@ internal sealed class CommandLineParser
                 }
 
                 value = EnsureValueType(command.Name, option, value ?? string.Empty);
-                command.AddOption(option, value);
+                command.AddArgument(option, value);
             }
             else if (TryGetCommandDefinition(arg, out var definition))
             {
@@ -63,19 +63,19 @@ internal sealed class CommandLineParser
 
         var (definition, _) = _rootCommandGroup.GetCommand(commandName);
         if (definition == null) return value;
-        var optionDefinition = definition.GetParameter(parameterName);
-        if (optionDefinition == null) return value;
-        if (optionDefinition.IsFlag)
+        var argumentDefinition = definition.GetParameter(parameterName);
+        if (argumentDefinition == null) return value;
+        if (argumentDefinition.IsFlag)
         {
             return true;
         }
-        return Convert.ChangeType(value, optionDefinition.ValueType);
+        return Convert.ChangeType(value, argumentDefinition.ValueType);
 
     }
 
-    private static bool IsOption(string arg)
+    private static bool IsArgument(string arg)
     {
-        return IsLongOption(arg) || IsShortOption(arg);
+        return IsLongArgument(arg) || IsShortArgument(arg);
     }
 
     private bool TryGetCommandGroup(string groupName, out CommandGroup? group)
@@ -90,30 +90,30 @@ internal sealed class CommandLineParser
         return group != null;
     }
 
-    private static bool IsShortOption(string arg)
+    private static bool IsShortArgument(string arg)
     {
         return arg.StartsWith(ShortOptionPrefix);
     }
 
-    private static bool IsLongOption(string arg)
+    private static bool IsLongArgument(string arg)
     {
         return arg.StartsWith(LongOptionPrefix);
     }
 
-    private static string GetOptionName(string arg)
+    private static string GetArgumentName(string arg)
     {
-        if (IsLongOption(arg))
+        if (IsLongArgument(arg))
         {
             return arg[2..];
         }
-        else if (IsShortOption(arg))
+        else if (IsShortArgument(arg))
         {
             return arg[1..];
         }
         return arg;
     }
 
-    private static bool TryGetOptionValue(string arg, out string? value)
+    private static bool TryGetArgumentValue(string arg, out string? value)
     {
         if (!arg.Contains('='))
         {
@@ -129,9 +129,9 @@ internal sealed class CommandLineParser
 
     private static bool LookAhead(string[] args, int index) => index + 1 < args.Length;
 
-    private static bool IsNextOption(string[] args, int index)
+    private static bool IsNextArgument(string[] args, int index)
     {
-        return LookAhead(args, index) && IsOption(args[index + 1]);
+        return LookAhead(args, index) && IsArgument(args[index + 1]);
     }
 
     private bool TryGetCommandDefinition(string name, out CommandDefinition? definition)

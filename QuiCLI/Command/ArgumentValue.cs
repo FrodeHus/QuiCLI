@@ -1,11 +1,11 @@
 ﻿namespace QuiCLI.Command
 {
-    public sealed class OptionValue
+    public sealed class ArgumentValue
     {
         public string Name { get; init; }
         public object Value { get; init; }
 
-        public OptionValue(string name, object value)
+        public ArgumentValue(string name, object value)
         {
             Name = name;
             Value = value;
