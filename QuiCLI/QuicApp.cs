@@ -50,21 +50,20 @@ public class QuicApp
     public async Task RunAsync()
     {
 
-        var parser = new CommandLineParser();
-        var commands = parser.Parse(Environment.GetCommandLineArgs().Skip(1).ToArray());
-        if (commands.Any())
+        var parser = new CommandLineParser(RootCommands);
+        var command = parser.Parse(Environment.GetCommandLineArgs().Skip(1).ToArray());
+        if (command is not null)
         {
-            var (definition, instance) = GetCommandInstance(commands[0].Name);
+            var (definition, instance) = GetCommandInstance(command.Name);
             var result = await GetCommandOutput(instance, definition);
 
             Console.WriteLine(result?.ToString());
         }
         else
-         if (!commands.Any())
         {
-            foreach (var command in RootCommands.Commands)
+            foreach (var cmd in RootCommands.Commands)
             {
-                Console.WriteLine(command.Key.Name);
+                Console.WriteLine(cmd.Key.Name);
             }
         }
     }

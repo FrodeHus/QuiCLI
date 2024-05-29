@@ -16,20 +16,19 @@ internal sealed class CommandLineParser
     private readonly CommandGroup? _rootCommandGroup;
     private CommandGroup? _currentCommandGroup;
 
-    public IList<ParsedCommand> Parse(string[] args)
+    public ParsedCommand? Parse(string[] args)
     {
         _currentCommandGroup = _rootCommandGroup;
-        if (args == null) return [];
+        if (args == null) return null;
         args = args.Where(o => !string.IsNullOrWhiteSpace(o)).ToArray();
-        var commands = new List<ParsedCommand>();
+        ParsedCommand? command = null;
         for (var i = 0; i < args.Length; i++)
         {
             var arg = args[i];
             if (string.IsNullOrWhiteSpace(arg)) continue;
 
-            if (IsOption(arg))
+            if (command is not null && IsOption(arg))
             {
-                var command = commands[^1];
                 var option = GetOptionName(arg);
                 object? value;
                 if (!TryGetOptionValue(arg, out var optionValue) && i + 1 < args.Length
@@ -44,18 +43,18 @@ internal sealed class CommandLineParser
                 }
 
                 value = EnsureValueType(command.Name, option, value ?? string.Empty);
-                commands[^1].AddOption(option, value);
+                command.AddOption(option, value);
             }
             else if (TryGetCommandDefinition(arg, out var definition))
             {
-                commands.Add(new ParsedCommand(arg, definition));
+                command = new ParsedCommand(arg, definition);
             }
             else if (TryGetCommandGroup(arg, out var group))
             {
                 _currentCommandGroup = group;
             }
         }
-        return commands;
+        return command;
     }
 
     private object EnsureValueType(string commandName, string parameterName, object value)

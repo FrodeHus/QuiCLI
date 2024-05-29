@@ -10,16 +10,16 @@ namespace QuiCLI.Tests.CommandLine
         {
             var commandLine = new string[] { };
             var parser = new CommandLineParser();
-            var commands = parser.Parse(commandLine);
-            Assert.Empty(commands);
+            var command = parser.Parse(commandLine);
+            Assert.Null(command);
         }
 
         [Fact]
         public void CommandLineParser_NullParse()
         {
             var parser = new CommandLineParser();
-            var commands = parser.Parse(null!);
-            Assert.Empty(commands);
+            var command = parser.Parse(null!);
+            Assert.Null(command);
         }
 
         [Fact]
@@ -29,10 +29,10 @@ namespace QuiCLI.Tests.CommandLine
             var command = commandGroup.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "test2", "--parameter= world" };
             var parser = new CommandLineParser(commandGroup);
-            var commands = parser.Parse(commandLine);
-            Assert.Single(commands);
-            Assert.Single(commands[0].Options);
-            Assert.Equal("world", commands[0].Options[0].Value);
+            var parsedCommand = parser.Parse(commandLine);
+            Assert.NotNull(parsedCommand);
+            Assert.Single(parsedCommand.Options);
+            Assert.Equal("world", parsedCommand.Options[0].Value);
         }
 
         [Fact]
@@ -42,10 +42,10 @@ namespace QuiCLI.Tests.CommandLine
             var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "test2", "--name", "Foo" };
             var parser = new CommandLineParser(commands);
-            var parsedCommands = parser.Parse(commandLine);
-            Assert.Single(parsedCommands);
-            Assert.Single(parsedCommands[0].Options);
-            Assert.Equal("Foo", parsedCommands[0].Options[0].Value);
+            var parsedCommand = parser.Parse(commandLine);
+            Assert.NotNull(parsedCommand);
+            Assert.Single(parsedCommand.Options);
+            Assert.Equal("Foo", parsedCommand.Options[0].Value);
         }
 
         [Theory]
@@ -59,10 +59,10 @@ namespace QuiCLI.Tests.CommandLine
             var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == commandName);
             var commandLine = new string[] { commandName, "--parameter", value?.ToString()! };
             var parser = new CommandLineParser(commands);
-            var parsedCommands = parser.Parse(commandLine);
-            Assert.Single(parsedCommands);
-            Assert.Single(parsedCommands[0].Options);
-            Assert.Equal(expected, parsedCommands[0].Options[0].Value);
+            var parsedCommand = parser.Parse(commandLine);
+            Assert.NotNull(parsedCommand);
+            Assert.Single(parsedCommand.Options);
+            Assert.Equal(expected, parsedCommand.Options[0].Value);
         }
 
         [Fact]
@@ -72,10 +72,10 @@ namespace QuiCLI.Tests.CommandLine
             commands.AddCommandGroup("group1").AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "group1", "test2", "--parameter", "test" };
             var parser = new CommandLineParser(commands);
-            var parsedCommands = parser.Parse(commandLine);
-            Assert.Single(parsedCommands);
-            Assert.Single(parsedCommands[0].Options);
-            Assert.Equal("test", parsedCommands[0].Options[0].Value);
+            var parsedCommand = parser.Parse(commandLine);
+            Assert.NotNull(parsedCommand);
+            Assert.Single(parsedCommand.Options);
+            Assert.Equal("test", parsedCommand.Options[0].Value);
         }
     }
 }
