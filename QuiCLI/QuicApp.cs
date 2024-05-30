@@ -1,7 +1,7 @@
 ﻿using QuiCLI.Builder;
 using QuiCLI.Command;
 using QuiCLI.Help;
-using QuiCLI.Internal;
+using QuiCLI.Middleware;
 using System.Diagnostics.CodeAnalysis;
 
 namespace QuiCLI;
@@ -9,6 +9,7 @@ namespace QuiCLI;
 public class QuicApp
 {
     public required IServiceProvider ServiceProvider { get; init; }
+    public required QuicMiddlewareDelegate Pipeline { get; init; }
     public required CommandGroup RootCommands { get; init; }
     internal List<ArgumentDefinition> GlobalArguments { get; init; } = [];
     public static QuicAppBuilder CreateBuilder()
@@ -29,27 +30,6 @@ public class QuicApp
         return RootCommands.AddCommandGroup(name);
     }
 
-    internal (CommandDefinition, object) GetCommandInstance(ParsedCommand parsedCommand)
-    {
-        var (_, implementationFactory) = parsedCommand.CommandGroup!.GetCommand(parsedCommand.Name);
-        return (parsedCommand.Definition, implementationFactory.Invoke(ServiceProvider));
-    }
-
-    internal async Task<object?> GetCommandOutput(object commandInstance, ParsedCommand parsedCommand)
-    {
-        if (RequestedHelp(parsedCommand))
-        {
-            var helpBuilder = new HelpBuilder(parsedCommand.CommandGroup!);
-            return helpBuilder.BuildHelp(parsedCommand.Definition);
-        }
-        return await Dispatcher.InvokeAsync(commandInstance, parsedCommand);
-    }
-
-    internal static bool RequestedHelp(ParsedCommand command)
-    {
-        return command.Arguments.Any(a => a.Name == "help" && (bool)a.Value);
-    }
-
     public void Run()
     {
         RunAsync().GetAwaiter().GetResult();
@@ -61,10 +41,9 @@ public class QuicApp
         var (command, group) = parser.Parse(Environment.GetCommandLineArgs().Skip(1).ToArray());
         if (command is not null)
         {
-            var (_, instance) = GetCommandInstance(command);
-            var result = await GetCommandOutput(instance, command);
-
-            Console.WriteLine(result?.ToString());
+            var context = new QuicCommandContext(command) { ServiceProvider = ServiceProvider };
+            await Pipeline(context);
+            Console.WriteLine(context.CommandResult);
         }
         else
         {

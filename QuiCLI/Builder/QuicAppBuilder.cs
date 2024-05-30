@@ -1,15 +1,20 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using QuiCLI.Command;
+using QuiCLI.Middleware;
 
 namespace QuiCLI.Builder;
 
 public class QuicAppBuilder
 {
     public IServiceCollection Services { get; init; }
+    public IQuicPipelineBuilder Pipeline { get; init; }
     internal List<ArgumentDefinition> GlobalArguments { get; init; } = [];
     public QuicAppBuilder()
     {
         Services = new ServiceCollection();
+        Pipeline = new QuicPipelineBuilder()
+            .UseMiddleware<ParseCommandLine>()
+            .UseMiddleware<CommandDispatcher>();
         InitDefaultGlobalArguments();
     }
 
@@ -27,30 +32,6 @@ public class QuicAppBuilder
             DefaultValue = false,
             ValueType = typeof(bool)
         });
-
-        GlobalArguments.Add(new ArgumentDefinition
-        {
-            Name = "version",
-            InternalName = "version",
-            Help = "Show version information",
-            IsFlag = true,
-            IsGlobal = true,
-            IsRequired = false,
-            DefaultValue = false,
-            ValueType = typeof(bool)
-        });
-
-        GlobalArguments.Add(new ArgumentDefinition
-        {
-            Name = "verbose",
-            InternalName = "verbose",
-            Help = "Show verbose output",
-            IsFlag = true,
-            IsGlobal = true,
-            IsRequired = false,
-            DefaultValue = false,
-            ValueType = typeof(bool)
-        });
     }
 
     public QuicApp Build()
@@ -60,6 +41,7 @@ public class QuicAppBuilder
         return new QuicApp
         {
             ServiceProvider = provider,
+            Pipeline = Pipeline.Build(),
             GlobalArguments = GlobalArguments,
             RootCommands = new CommandGroup() { GlobalArguments = GlobalArguments }
         };
