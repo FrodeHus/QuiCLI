@@ -7,7 +7,7 @@ namespace QuiCLI.Internal
     {
         public static async Task<object?> InvokeAsync(object instance, ParsedCommand command)
         {
-            object?[]? parameters = GetParameters(command.Arguments, command.Definition.Arguments);
+            object?[]? parameters = GetParameters(command.Arguments, command.Definition.Arguments.Where(a => !a.IsGlobal).ToList());
             var result = command.Definition.Method!.Invoke(instance, parameters);
             if (result is Task task)
             {
@@ -25,7 +25,7 @@ namespace QuiCLI.Internal
                 return null;
             }
 
-            var result = new object?[parameters.Count(a => !a.IsGlobal)];
+            var result = new object?[parameters.Count];
             for (int i = 0; i < result.Length; i++)
             {
                 var parameter = parameters[i];
@@ -33,6 +33,10 @@ namespace QuiCLI.Internal
                 if (value is not null)
                 {
                     result[i] = Convert.ChangeType(value.Value, parameter.ValueType);
+                }
+                else if (parameter.DefaultValue is not null)
+                {
+                    result[i] = Convert.ChangeType(parameter.DefaultValue, parameter.ValueType);
                 }
                 else if (!parameter.IsRequired)
                 {
