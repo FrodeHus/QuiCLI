@@ -25,8 +25,8 @@ namespace QuiCLI.Internal
                 return null;
             }
 
-            var result = new object?[parameters.Count];
-            for (int i = 0; i < parameters.Count; i++)
+            var result = new object?[parameters.Count(a => !a.IsGlobal)];
+            for (int i = 0; i < result.Length; i++)
             {
                 var parameter = parameters[i];
                 var value = values.Find(v => v.Name == parameter.Name);
@@ -34,9 +34,9 @@ namespace QuiCLI.Internal
                 {
                     result[i] = Convert.ChangeType(value.Value, parameter.ValueType);
                 }
-                else
+                else if (!parameter.IsRequired)
                 {
-                    result[i] = parameter.DefaultValue;
+                    result[i] = null;
                 }
             }
             return result;
