@@ -37,6 +37,15 @@ internal class HelpBuilder(CommandGroup rootCommandGroup)
                 sb.AppendLine($"\t{group.Key}");
             }
         }
+        if (rootCommandGroup.GlobalArguments.Count > 0)
+        {
+            sb.AppendLine();
+            sb.AppendLine("Global Arguments:");
+            foreach (var argument in rootCommandGroup.GlobalArguments)
+            {
+                sb.AppendLine($"\t--{argument.Name}\t:\t{argument.Help}");
+            }
+        }
         return sb.ToString();
     }
 }

@@ -20,6 +20,29 @@ public class QuicAppBuilder
         {
             Name = "help",
             InternalName = "help",
+            Help = "Show help information",
+            IsFlag = true,
+            IsRequired = false,
+            DefaultValue = false,
+            ValueType = typeof(bool)
+        });
+
+        GlobalArguments.Add(new ArgumentDefinition
+        {
+            Name = "version",
+            InternalName = "version",
+            Help = "Show version information",
+            IsFlag = true,
+            IsRequired = false,
+            DefaultValue = false,
+            ValueType = typeof(bool)
+        });
+
+        GlobalArguments.Add(new ArgumentDefinition
+        {
+            Name = "verbose",
+            InternalName = "verbose",
+            Help = "Show verbose output",
             IsFlag = true,
             IsRequired = false,
             DefaultValue = false,

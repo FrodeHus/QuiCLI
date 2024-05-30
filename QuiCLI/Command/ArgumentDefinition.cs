@@ -10,6 +10,7 @@ public class ArgumentDefinition
     /// Internal name of the argument (e.g. `displayName`)
     /// </summary>
     public required string InternalName { get; init; }
+    public string? Help { get; set; }
     public bool IsFlag { get; init; }
     public bool IsRequired { get; init; }
     public object? DefaultValue { get; init; }
