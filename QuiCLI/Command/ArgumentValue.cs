@@ -2,12 +2,13 @@
 {
     public sealed class ArgumentValue
     {
-        public string Name { get; init; }
+        public ArgumentDefinition Argument { get; init; }
         public object Value { get; init; }
+        public string Name => Argument.Name;
 
-        public ArgumentValue(string name, object value)
+        public ArgumentValue(ArgumentDefinition argument, object value)
         {
-            Name = name;
+            Argument = argument;
             Value = value;
         }
     }

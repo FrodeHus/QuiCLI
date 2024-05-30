@@ -1,13 +1,13 @@
 ﻿namespace QuiCLI.Command;
 
-public class ParameterDefinition
+public class ArgumentDefinition
 {
     /// <summary>
-    /// CLI-friendly name of the parameter (e.g. `display-name`)
+    /// CLI-friendly name of the argument (e.g. `display-name`)
     /// </summary>
     public required string Name { get; init; }
     /// <summary>
-    /// Internal name of the parameter (e.g. `displayName`)
+    /// Internal name of the argument (e.g. `displayName`)
     /// </summary>
     public required string InternalName { get; init; }
     public bool IsFlag { get; init; }

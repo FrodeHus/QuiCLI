@@ -9,8 +9,8 @@ namespace QuiCLI;
 public class QuicApp
 {
     public required IServiceProvider ServiceProvider { get; init; }
-    public CommandGroup RootCommands { get; init; } = new CommandGroup();
-    internal List<ParameterDefinition> GlobalArguments { get; init; } = [];
+    public required CommandGroup RootCommands { get; init; }
+    internal List<ArgumentDefinition> GlobalArguments { get; init; } = [];
     public static QuicAppBuilder CreateBuilder()
     {
         return new QuicAppBuilder();

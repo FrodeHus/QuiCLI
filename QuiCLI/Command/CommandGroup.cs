@@ -6,6 +6,7 @@ namespace QuiCLI.Command
     public class CommandGroup(string? name = null)
     {
         public string? Name { get; init; } = name;
+        public required List<ArgumentDefinition> GlobalArguments { get; init; }
         public Dictionary<CommandDefinition, Func<IServiceProvider, object>> Commands
         {
             get;
@@ -18,7 +19,7 @@ namespace QuiCLI.Command
 
         public CommandGroup AddCommandGroup(string name)
         {
-            var group = new CommandGroup(name);
+            var group = new CommandGroup(name) { GlobalArguments = GlobalArguments };
             SubGroups.Add(name, group);
             return group;
         }
@@ -40,7 +41,7 @@ namespace QuiCLI.Command
                 if (commandAttribute is not null)
                 {
                     var parameters = GetParameters(method);
-                    var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Parameters = parameters.ToList(), Help = commandAttribute.Help };
+                    var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Arguments = parameters.ToList(), Help = commandAttribute.Help, GlobalArguments = GlobalArguments };
                     Commands.Add(
                         definition,
                         implementationFactory);
@@ -50,7 +51,7 @@ namespace QuiCLI.Command
             return addedCommands;
         }
 
-        private static IEnumerable<ParameterDefinition> GetParameters(MethodInfo method)
+        private static IEnumerable<ArgumentDefinition> GetParameters(MethodInfo method)
         {
             var parameters = method.GetParameters();
 
@@ -58,13 +59,13 @@ namespace QuiCLI.Command
             {
                 yield return parameter.ParameterType switch
                 {
-                    Type t when t == typeof(bool) => new ParameterDefinition
+                    Type t when t == typeof(bool) => new ArgumentDefinition
                     {
                         Name = ConvertCamelCaseToParameterName(parameter.Name!),
                         InternalName = parameter.Name!,
                         IsFlag = true
                     },
-                    _ => new ParameterDefinition
+                    _ => new ArgumentDefinition
                     {
                         Name = ConvertCamelCaseToParameterName(parameter.Name!),
                         InternalName = parameter.Name!,

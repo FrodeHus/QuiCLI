@@ -6,7 +6,7 @@ namespace QuiCLI.Builder;
 public class QuicAppBuilder
 {
     public IServiceCollection Services { get; init; }
-    internal List<ParameterDefinition> GlobalArguments { get; init; } = [];
+    internal List<ArgumentDefinition> GlobalArguments { get; init; } = [];
     public QuicAppBuilder()
     {
         Services = new ServiceCollection();
@@ -16,7 +16,7 @@ public class QuicAppBuilder
     internal void InitDefaultGlobalArguments()
     {
 
-        GlobalArguments.Add(new ParameterDefinition
+        GlobalArguments.Add(new ArgumentDefinition
         {
             Name = "help",
             InternalName = "help",
@@ -34,7 +34,8 @@ public class QuicAppBuilder
         return new QuicApp
         {
             ServiceProvider = provider,
-            GlobalArguments = GlobalArguments
+            GlobalArguments = GlobalArguments,
+            RootCommands = new CommandGroup() { GlobalArguments = GlobalArguments }
         };
     }
 }

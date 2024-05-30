@@ -6,12 +6,26 @@ namespace QuiCLI.Command
     {
         public string Name { get; init; } = name;
         public string? Help { get; init; } = description;
-        public required List<ParameterDefinition> Parameters { get; init; }
+        public required List<ArgumentDefinition> Arguments { get; init; }
+        public required List<ArgumentDefinition> GlobalArguments { get; init; }
         public MethodInfo? Method { get; set; }
 
-        public ParameterDefinition? GetParameter(string name)
+        public bool TryGetArgument(string name, out ArgumentDefinition argumentDefinition)
         {
-            return Parameters.Find(o => o.Name == name);
+            if (Arguments.Any(a => a.Name == name))
+            {
+                argumentDefinition = Arguments.Single(a => a.Name == name);
+                return true;
+            }
+
+            if (GlobalArguments.Any(a => a.Name == name))
+            {
+                argumentDefinition = GlobalArguments.Single(a => a.Name == name);
+                return true;
+            }
+
+            argumentDefinition = null!;
+            return false;
         }
     }
 }

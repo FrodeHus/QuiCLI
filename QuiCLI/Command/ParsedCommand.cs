@@ -18,9 +18,9 @@
             CommandGroup = group;
         }
 
-        public void AddArgument(string argument, object value)
+        public void AddArgument(ArgumentDefinition argument, object value)
         {
-            if (string.IsNullOrEmpty(argument))
+            if (argument is null)
             {
                 throw new ArgumentException($"'{nameof(argument)}' cannot be null or empty.", nameof(argument));
             }

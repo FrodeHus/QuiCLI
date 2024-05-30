@@ -7,7 +7,7 @@ namespace QuiCLI.Internal
     {
         public static async Task<object?> InvokeAsync(object instance, ParsedCommand command)
         {
-            object?[]? parameters = GetParameters(command.Arguments, command.Definition.Parameters);
+            object?[]? parameters = GetParameters(command.Arguments, command.Definition.Arguments);
             var result = command.Definition.Method!.Invoke(instance, parameters);
             if (result is Task task)
             {
@@ -18,7 +18,7 @@ namespace QuiCLI.Internal
             return result;
         }
 
-        private static object?[]? GetParameters(List<ArgumentValue> values, List<ParameterDefinition> parameters)
+        private static object?[]? GetParameters(List<ArgumentValue> values, List<ArgumentDefinition> parameters)
         {
             if (parameters.Count == 0)
             {
