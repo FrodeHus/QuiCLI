@@ -34,13 +34,15 @@ namespace QuiCLI.Command
     where TCommand : class
         {
             var addedCommands = new List<CommandDefinition>();
-            var methods = typeof(TCommand).GetMethods().Where(m => m.GetCustomAttribute<CommandAttribute>() is not null);
-            foreach (var method in methods)
+            foreach (var method in typeof(TCommand)
+                .GetMethods()
+                .Where(m => m.GetCustomAttribute<CommandAttribute>() is not null))
             {
                 var commandAttribute = method.GetCustomAttribute<CommandAttribute>();
                 if (commandAttribute is not null)
                 {
-                    var arguments = GlobalArguments;
+                    var arguments = new List<ArgumentDefinition>();
+                    arguments.AddRange(GlobalArguments);
                     arguments.AddRange(GetParameters(method));
 
                     var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Arguments = arguments.ToList(), Help = commandAttribute.Help };
