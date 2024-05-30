@@ -23,6 +23,7 @@ public class QuicAppBuilder
             Help = "Show help information",
             IsFlag = true,
             IsRequired = false,
+            IsGlobal = true,
             DefaultValue = false,
             ValueType = typeof(bool)
         });
@@ -33,6 +34,7 @@ public class QuicAppBuilder
             InternalName = "version",
             Help = "Show version information",
             IsFlag = true,
+            IsGlobal = true,
             IsRequired = false,
             DefaultValue = false,
             ValueType = typeof(bool)
@@ -44,6 +46,7 @@ public class QuicAppBuilder
             InternalName = "verbose",
             Help = "Show verbose output",
             IsFlag = true,
+            IsGlobal = true,
             IsRequired = false,
             DefaultValue = false,
             ValueType = typeof(bool)

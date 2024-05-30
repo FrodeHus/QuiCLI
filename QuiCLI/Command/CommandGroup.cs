@@ -40,8 +40,8 @@ namespace QuiCLI.Command
                 var commandAttribute = method.GetCustomAttribute<CommandAttribute>();
                 if (commandAttribute is not null)
                 {
-                    var arguments = GetParameters(method).ToList();
-                    arguments.AddRange(GlobalArguments);
+                    var arguments = GlobalArguments;
+                    arguments.AddRange(GetParameters(method));
 
                     var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Arguments = arguments.ToList(), Help = commandAttribute.Help };
                     Commands.Add(
