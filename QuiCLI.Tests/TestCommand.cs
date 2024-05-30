@@ -33,5 +33,11 @@ namespace QuiCLI.Tests
         {
             return $"Hello, World! You are awesome = {parameter}.";
         }
+
+        [Command("test6")]
+        public string Test6(string parameter, string? parameter2)
+        {
+            return $"Hello, {parameter} {parameter2 ?? ""}!";
+        }
     }
 }

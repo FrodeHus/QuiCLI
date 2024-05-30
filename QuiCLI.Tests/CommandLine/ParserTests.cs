@@ -88,5 +88,30 @@ namespace QuiCLI.Tests.CommandLine
             Assert.Equal(2, parsedCommand.Arguments.Count);
             Assert.Contains(parsedCommand.Arguments, a => a.Name == "help");
         }
+
+        [Fact]
+        public void CommandLineParser_DetectOptionalArguments()
+        {
+            var commands = new CommandGroup()
+            {
+                GlobalArguments = [new ArgumentDefinition { Name = "help", InternalName = "help" }]
+            };
+            var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test6");
+            var optionalArgument = command.Arguments.SingleOrDefault(a => a.Name == "parameter2");
+            Assert.NotNull(optionalArgument);
+            Assert.False(optionalArgument.IsRequired);
+        }
+        [Fact]
+        public void CommandLineParser_DetectRequiredArguments()
+        {
+            var commands = new CommandGroup()
+            {
+                GlobalArguments = [new ArgumentDefinition { Name = "help", InternalName = "help" }]
+            };
+            var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test6");
+            var optionalArgument = command.Arguments.SingleOrDefault(a => a.Name == "parameter");
+            Assert.NotNull(optionalArgument);
+            Assert.True(optionalArgument.IsRequired);
+        }
     }
 }

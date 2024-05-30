@@ -43,7 +43,7 @@ namespace QuiCLI.Command
                 {
                     var arguments = new List<ArgumentDefinition>();
                     arguments.AddRange(GlobalArguments);
-                    arguments.AddRange(GetParameters(method));
+                    arguments.AddRange(GetArguments(method));
 
                     var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Arguments = arguments.ToList(), Help = commandAttribute.Help };
                     Commands.Add(
@@ -55,25 +55,27 @@ namespace QuiCLI.Command
             return addedCommands;
         }
 
-        private static IEnumerable<ArgumentDefinition> GetParameters(MethodInfo method)
+        private static IEnumerable<ArgumentDefinition> GetArguments(MethodInfo method)
         {
             var parameters = method.GetParameters();
-
+            var nullabilityContext = new NullabilityInfoContext();
             foreach (var parameter in parameters)
             {
+                var nullabilityInfo = nullabilityContext.Create(parameter);
                 yield return parameter.ParameterType switch
                 {
                     Type t when t == typeof(bool) => new ArgumentDefinition
                     {
                         Name = ConvertCamelCaseToParameterName(parameter.Name!),
                         InternalName = parameter.Name!,
-                        IsFlag = true
+                        IsFlag = true,
+                        IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable
                     },
                     _ => new ArgumentDefinition
                     {
                         Name = ConvertCamelCaseToParameterName(parameter.Name!),
                         InternalName = parameter.Name!,
-                        IsRequired = !parameter.HasDefaultValue,
+                        IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable,
                         ValueType = parameter.ParameterType,
                         DefaultValue = parameter.HasDefaultValue ? parameter.DefaultValue : null
                     }
