@@ -7,7 +7,6 @@ namespace QuiCLI.Command
         public string Name { get; init; } = name;
         public string? Help { get; init; } = description;
         public required List<ArgumentDefinition> Arguments { get; init; }
-        public required List<ArgumentDefinition> GlobalArguments { get; init; }
         public MethodInfo? Method { get; set; }
 
         public bool TryGetArgument(string name, out ArgumentDefinition argumentDefinition)
@@ -15,12 +14,6 @@ namespace QuiCLI.Command
             if (Arguments.Any(a => a.Name == name))
             {
                 argumentDefinition = Arguments.Single(a => a.Name == name);
-                return true;
-            }
-
-            if (GlobalArguments.Any(a => a.Name == name))
-            {
-                argumentDefinition = GlobalArguments.Single(a => a.Name == name);
                 return true;
             }
 

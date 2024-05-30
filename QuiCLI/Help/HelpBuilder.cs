@@ -48,4 +48,38 @@ internal class HelpBuilder(CommandGroup rootCommandGroup)
         }
         return sb.ToString();
     }
+
+    public string BuildHelp(CommandDefinition commandDefinition)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine($"Usage: {commandDefinition.Name}");
+        if (!string.IsNullOrWhiteSpace(commandDefinition.Help))
+        {
+            sb.AppendLine(commandDefinition.Help);
+        }
+        sb.AppendLine();
+        sb.AppendLine("Arguments:");
+        foreach (var argument in commandDefinition.Arguments.Where(a => !a.IsGlobal))
+        {
+            sb.Append($"\t{argument.Name}");
+            if (!string.IsNullOrWhiteSpace(argument.Help))
+            {
+                sb.AppendLine($"\t:\t{argument.Help}");
+            }
+            else
+            {
+                sb.AppendLine();
+            }
+        }
+        if (commandDefinition.Arguments.Any(a => a.IsGlobal))
+        {
+            sb.AppendLine();
+            sb.AppendLine("Global Arguments:");
+            foreach (var argument in commandDefinition.Arguments.Where(a => a.IsGlobal))
+            {
+                sb.AppendLine($"\t--{argument.Name}\t:\t{argument.Help}");
+            }
+        }
+        return sb.ToString();
+    }
 }

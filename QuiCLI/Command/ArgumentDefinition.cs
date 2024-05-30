@@ -12,6 +12,7 @@ public class ArgumentDefinition
     public required string InternalName { get; init; }
     public string? Help { get; set; }
     public bool IsFlag { get; init; }
+    public bool IsGlobal { get; init; }
     public bool IsRequired { get; init; }
     public object? DefaultValue { get; init; }
     public List<string> AllowedValues { get; init; } = [];
