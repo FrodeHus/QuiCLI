@@ -61,16 +61,15 @@ internal class HelpBuilder(CommandGroup rootCommandGroup)
         sb.AppendLine("Arguments:");
         foreach (var argument in commandDefinition.Arguments.Where(a => !a.IsGlobal))
         {
-            sb.Append($"\t{argument.Name}");
-            if (!string.IsNullOrWhiteSpace(argument.Help))
+            sb.Append($"\t--{argument.Name}");
+            sb.Append(argument.IsFlag ? "" : $"\t:\t<{argument.ValueType.Name}>");
+            if (argument.IsRequired)
             {
-                sb.AppendLine($"\t:\t{argument.Help}");
+                sb.Append(" [required]");
             }
-            else
-            {
-                sb.AppendLine();
-            }
+            sb.AppendLine();
         }
+
         if (commandDefinition.Arguments.Any(a => a.IsGlobal))
         {
             sb.AppendLine();
