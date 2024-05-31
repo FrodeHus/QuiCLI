@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <IsTrimmable>true</IsTrimmable>
+	  <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))"></IsAotCompatible>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <Title>QuiCLI</Title>
 	  <Authors>frodehus</Authors>

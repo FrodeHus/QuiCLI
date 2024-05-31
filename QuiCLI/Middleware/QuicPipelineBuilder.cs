@@ -32,7 +32,7 @@ public sealed class QuicPipelineBuilder : IQuicPipelineBuilder
 internal sealed class MiddlewareDescriptor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type middlewareType)
 {
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    private Type _implementationType = middlewareType;
+    private readonly Type _implementationType = middlewareType;
 
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type MiddlewareType => _implementationType;

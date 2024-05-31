@@ -1,5 +1,4 @@
 ﻿using QuiCLI.Command;
-using System.Diagnostics.CodeAnalysis;
 
 namespace QuiCLI.Internal
 {
@@ -9,11 +8,14 @@ namespace QuiCLI.Internal
         {
             object?[]? parameters = GetParameters(command.Arguments, command.Definition.Arguments.Where(a => !a.IsGlobal).ToList());
             var result = command.Definition.Method!.Invoke(instance, parameters);
+            if (result is Task<object> taskObject)
+            {
+                return await taskObject.ConfigureAwait(false);
+            }
+
             if (result is Task task)
             {
                 await task.ConfigureAwait(false);
-                var property = GetProperty("Result", task);
-                return property?.GetValue(task);
             }
             return result;
         }
@@ -44,11 +46,6 @@ namespace QuiCLI.Internal
                 }
             }
             return result;
-        }
-
-        private static System.Reflection.PropertyInfo? GetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(string propertyName, T type)
-        {
-            return typeof(T).GetProperty(propertyName);
         }
     }
 }
