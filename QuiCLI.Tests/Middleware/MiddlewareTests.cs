@@ -10,6 +10,7 @@ public class MiddlewareTests
         // Arrange
         var builder = new QuicPipelineBuilder();
         builder.UseMiddleware<TestMiddleware>();
+        builder.UseMiddleware<TestMiddleware2>();
 
         // Act
         var pipeline = builder.Build();
@@ -25,7 +26,16 @@ public class MiddlewareTests
     {
         public override async ValueTask<int> OnExecute(QuicCommandContext context)
         {
-            context.CommandResult = "Hello, world!";
+            context.CommandResult = "Hello,";
+            return await Next(context);
+        }
+    }
+
+    public class TestMiddleware2(QuicMiddlewareDelegate next) : QuicMiddleware(next)
+    {
+        public override async ValueTask<int> OnExecute(QuicCommandContext context)
+        {
+            context.CommandResult += " world!";
             return await Next(context);
         }
     }
