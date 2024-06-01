@@ -2,6 +2,7 @@
 
 [![.NET](https://github.com/FrodeHus/QuiCLI/actions/workflows/dotnet.yml/badge.svg)](https://github.com/FrodeHus/QuiCLI/actions/workflows/dotnet.yml)
 [![Publish](https://github.com/FrodeHus/QuiCLI/actions/workflows/nuget.yml/badge.svg)](https://github.com/FrodeHus/QuiCLI/actions/workflows/nuget.yml)
+[![CodeQL](https://github.com/FrodeHus/QuiCLI/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/FrodeHus/QuiCLI/actions/workflows/github-code-scanning/codeql)
 
 A lightweight framework for creating CLI applications with the primary focus of being compatible with AOT and trimming. This is to generate small and fast self-contained executables.
 
