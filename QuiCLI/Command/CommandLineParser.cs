@@ -50,7 +50,7 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
                 _currentCommandGroup = group;
             }
         }
-        if (!command?.ValidateArguments() ?? true)
+        if (!command?.ValidateArguments() ?? false)
         {
             return new Error(ErrorCode.MissingRequiredArgument, "Missing required argument(s)");
         }

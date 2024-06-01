@@ -137,5 +137,19 @@ namespace QuiCLI.Tests.CommandLine
             var result = parser.Parse(commandLine);
             Assert.True(result.IsFailure);
         }
+
+        [Fact]
+        public void CommandLineParser_GroupNameOnlyShouldNotCauseError()
+        {
+            var commands = new CommandGroup()
+            {
+                GlobalArguments = []
+            };
+            commands.AddCommandGroup("test-group");
+            var commandLine = new string[] { "test-group" };
+            var parser = new CommandLineParser(commands);
+            var result = parser.Parse(commandLine);
+            Assert.True(result.IsSuccess);
+        }
     }
 }
