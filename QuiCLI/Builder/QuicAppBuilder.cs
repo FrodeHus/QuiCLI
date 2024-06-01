@@ -15,7 +15,7 @@ public class QuicAppBuilder
         Pipeline = new QuicPipelineBuilder()
             .UseMiddleware<ExceptionHandler>()
             .UseMiddleware<CommandDispatcher>()
-            .UseMiddleware<DefaultOutput>();
+            .UseMiddleware<StringOutputFormatter>();
         InitDefaultGlobalArguments();
     }
 
