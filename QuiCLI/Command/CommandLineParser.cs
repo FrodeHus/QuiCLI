@@ -54,10 +54,18 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
         {
             return new Error(ErrorCode.MissingRequiredArgument, "Missing required argument(s)");
         }
+        command?.Arguments.AddRange(FillDefaultValues(command.Definition));
         return (command, _currentCommandGroup ?? rootCommandGroup);
     }
 
-    private object EnsureValueType(ArgumentDefinition argumentDefinition, object value)
+    private static IEnumerable<ArgumentValue> FillDefaultValues(CommandDefinition commandDefinition)
+    {
+        return commandDefinition.Arguments
+            .Where(a => a.DefaultValue != null && !a.IsFlag)
+            .Select(a => new ArgumentValue(a, a.DefaultValue!));
+    }
+
+    private static object EnsureValueType(ArgumentDefinition argumentDefinition, object value)
     {
         if (argumentDefinition == null) return value;
         if (argumentDefinition.IsFlag)

@@ -49,7 +49,8 @@ public class QuicApp
         var command = result.Value.ParsedCommand;
         if (command is not null)
         {
-            var context = new QuicCommandContext(command) { ServiceProvider = ServiceProvider };
+            var globalArguments = command.Arguments.Where(a => a.Argument.IsGlobal).ToList();
+            var context = new QuicCommandContext(command) { ServiceProvider = ServiceProvider, GlobalArguments = globalArguments };
             var executionResult = await Pipeline(context);
             if(executionResult == 0)
             {
