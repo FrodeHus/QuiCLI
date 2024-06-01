@@ -12,7 +12,7 @@ namespace QuiCLI.Middleware
         {
             try
             {
-                return await OnExecute(context);
+                return await Next(context);
             }
             catch (Exception ex)
             {
