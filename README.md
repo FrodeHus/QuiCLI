@@ -19,8 +19,11 @@ As an example of an application that uses QuiCLI, see [SecurityCenterCLI](https:
 - Command line argument type conversion
 - Command line argument default values
 
-
 ## Quick start
+
+_Note:_ The framework is still in early development, and the API is subject to change.
+
+The only supported returns types for asynchronous commands are `Task<object>` and `Task` due to reflection restrictions.
 
 ```csharp
 
