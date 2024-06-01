@@ -14,7 +14,7 @@ var builder = QuicApp.CreateBuilder();
 builder.Services.AddTransient<MyService>();
 var app = builder.Build();
 
-app.Command("hello", (sp) => new HelloCommand(sp.GetRequiredService<MyService>()));
+app.AddCommand((sp) => new HelloCommand(sp.GetRequiredService<MyService>()));
 app.Run();
 ```
 
