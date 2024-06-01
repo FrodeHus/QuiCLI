@@ -42,7 +42,7 @@ public class QuicApp
         if (result.IsFailure)
         {
             Console.WriteLine(result.Error);
-            var helpBuilder = new HelpBuilder(result.Value.CommandGroup);
+            var helpBuilder = new HelpBuilder(result.Value.CommandGroup ?? RootCommands);
             Console.WriteLine(helpBuilder.BuildHelp());
             Environment.Exit(1);
         }
