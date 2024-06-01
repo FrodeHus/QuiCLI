@@ -6,6 +6,7 @@
         public CommandDefinition Definition { get; set; }
         public CommandGroup CommandGroup { get; set; }
         public List<ArgumentValue> Arguments { get; } = [];
+
         public ParsedCommand(string name, CommandDefinition definition, CommandGroup group)
         {
             if (string.IsNullOrEmpty(name))
@@ -26,6 +27,14 @@
             }
 
             Arguments.Add(new ArgumentValue(argument, value));
+        }
+
+        public bool ValidateArguments()
+        {
+            return Definition
+                .Arguments
+                .Where(a => a.IsRequired)
+                .All(a => Arguments.Exists(arg => arg.Argument == a));
         }
     }
 }
