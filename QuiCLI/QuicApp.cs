@@ -43,7 +43,6 @@ public class QuicApp
         {
             var context = new QuicCommandContext(command) { ServiceProvider = ServiceProvider };
             await Pipeline(context);
-            Console.WriteLine(context.CommandResult);
         }
         else
         {

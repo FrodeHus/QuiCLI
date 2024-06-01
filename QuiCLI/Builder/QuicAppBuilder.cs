@@ -13,7 +13,9 @@ public class QuicAppBuilder
     {
         Services = new ServiceCollection();
         Pipeline = new QuicPipelineBuilder()
-            .UseMiddleware<CommandDispatcher>();
+            .UseMiddleware<ExceptionHandler>()
+            .UseMiddleware<CommandDispatcher>()
+            .UseMiddleware<DefaultOutput>();
         InitDefaultGlobalArguments();
     }
 
