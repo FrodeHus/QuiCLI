@@ -54,3 +54,20 @@ public class HelloCommand(MyService myService)
 ```cmd
 myapp hello --name "World"
 ```
+
+```cmd
+sampleapp.exe --help
+
+Usage:
+  <command> [arguments]
+
+Commands:
+        hello
+
+Nested Commands:
+        sub-group
+
+Global Arguments:
+        --help  :       Show help information
+        --output        :       Output format
+```
