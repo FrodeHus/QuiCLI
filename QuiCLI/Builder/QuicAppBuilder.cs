@@ -33,6 +33,18 @@ public class QuicAppBuilder
             DefaultValue = false,
             ValueType = typeof(bool)
         });
+
+        GlobalArguments.Add(new ArgumentDefinition
+        {
+            Name = "output",
+            InternalName = "output",
+            Help = "Output format",
+            IsFlag = false,
+            IsRequired = false,
+            IsGlobal = true,
+            DefaultValue = "string",
+            ValueType = typeof(String)
+        });
     }
 
     public QuicApp Build()
