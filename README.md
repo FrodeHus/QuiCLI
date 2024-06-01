@@ -26,6 +26,8 @@ _Note:_ The framework is still in early development, and the API is subject to c
 
 The only supported returns types for asynchronous commands are `Task<object>` and `Task` due to reflection restrictions.
 
+`dotnet add package QuiCLI`
+
 ```csharp
 
 using QuiCLI;
