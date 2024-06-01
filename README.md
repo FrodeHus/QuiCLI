@@ -1,6 +1,7 @@
 # QuiCLI
 
 [![.NET](https://github.com/FrodeHus/QuiCLI/actions/workflows/dotnet.yml/badge.svg)](https://github.com/FrodeHus/QuiCLI/actions/workflows/dotnet.yml)
+[![Publish](https://github.com/FrodeHus/QuiCLI/actions/workflows/nuget.yml/badge.svg)](https://github.com/FrodeHus/QuiCLI/actions/workflows/nuget.yml)
 
 A AOT-compatible lightweight framework for creating CLI applications.
 
