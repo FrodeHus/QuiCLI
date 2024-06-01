@@ -1,4 +1,6 @@
-﻿namespace QuiCLI.Command;
+﻿using QuiCLI.Common;
+
+namespace QuiCLI.Command;
 
 internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
 {
@@ -6,7 +8,7 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
     private const string ShortOptionPrefix = "-";
     private CommandGroup? _currentCommandGroup;
 
-    public (ParsedCommand?, CommandGroup) Parse(string[] args)
+    public Result<(ParsedCommand? ParsedCommand, CommandGroup CommandGroup)> Parse(string[] args)
     {
         _currentCommandGroup = rootCommandGroup;
         if (args == null) return (null, rootCommandGroup);
@@ -31,6 +33,10 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
                 {
                     value = argumentValue;
                 }
+                if (value is null && argumentDefinition.IsRequired)
+                {
+                    return new Error(ErrorCode.MissingRequiredArgument, "Missing required argument:" + argumentDefinition.Name);
+                }
 
                 value = EnsureValueType(argumentDefinition, value ?? string.Empty);
                 command.AddArgument(argumentDefinition, value);
@@ -43,6 +49,10 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
             {
                 _currentCommandGroup = group;
             }
+        }
+        if (!command?.ValidateArguments() ?? true)
+        {
+            return new Error(ErrorCode.MissingRequiredArgument, "Missing required argument(s)");
         }
         return (command, _currentCommandGroup ?? rootCommandGroup);
     }

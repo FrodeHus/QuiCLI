@@ -15,7 +15,9 @@ namespace QuiCLI.Tests.CommandLine
             var command = commandGroup.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "test2", "--parameter= world" };
             var parser = new CommandLineParser(commandGroup);
-            var (parsedCommand, _) = parser.Parse(commandLine);
+            var result = parser.Parse(commandLine);
+            Assert.True(result.IsSuccess);
+            var parsedCommand = result.Value.ParsedCommand;
             Assert.NotNull(parsedCommand);
             Assert.Single(parsedCommand.Arguments);
             Assert.Equal("world", parsedCommand.Arguments[0].Value);
@@ -31,7 +33,9 @@ namespace QuiCLI.Tests.CommandLine
             var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "test2", "--parameter", "Foo" };
             var parser = new CommandLineParser(commands);
-            var (parsedCommand, _) = parser.Parse(commandLine);
+            var result = parser.Parse(commandLine);
+            Assert.True(result.IsSuccess);
+            var parsedCommand = result.Value.ParsedCommand;
             Assert.NotNull(parsedCommand);
             Assert.Single(parsedCommand.Arguments);
             Assert.Equal("Foo", parsedCommand.Arguments[0].Value);
@@ -51,7 +55,9 @@ namespace QuiCLI.Tests.CommandLine
             var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == commandName);
             var commandLine = new string[] { commandName, "--parameter", value?.ToString()! };
             var parser = new CommandLineParser(commands);
-            var (parsedCommand, _) = parser.Parse(commandLine);
+            var result = parser.Parse(commandLine);
+            Assert.True(result.IsSuccess);
+            var parsedCommand = result.Value.ParsedCommand;
             Assert.NotNull(parsedCommand);
             Assert.Single(parsedCommand.Arguments);
             Assert.Equal(expected, parsedCommand.Arguments[0].Value);
@@ -67,7 +73,9 @@ namespace QuiCLI.Tests.CommandLine
             commands.AddCommandGroup("group1").AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "group1", "test2", "--parameter", "test" };
             var parser = new CommandLineParser(commands);
-            var (parsedCommand, _) = parser.Parse(commandLine);
+            var result = parser.Parse(commandLine);
+            Assert.True(result.IsSuccess);
+            var parsedCommand = result.Value.ParsedCommand;
             Assert.NotNull(parsedCommand);
             Assert.Single(parsedCommand.Arguments);
             Assert.Equal("test", parsedCommand.Arguments[0].Value);
@@ -83,7 +91,9 @@ namespace QuiCLI.Tests.CommandLine
             var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "test2", "--parameter", "test", "--help" };
             var parser = new CommandLineParser(commands);
-            var (parsedCommand, _) = parser.Parse(commandLine);
+            var result = parser.Parse(commandLine);
+            Assert.True(result.IsSuccess);
+            var parsedCommand = result.Value.ParsedCommand;
             Assert.NotNull(parsedCommand);
             Assert.Equal(2, parsedCommand.Arguments.Count);
             Assert.Contains(parsedCommand.Arguments, a => a.Name == "help");
@@ -112,6 +122,20 @@ namespace QuiCLI.Tests.CommandLine
             var optionalArgument = command.Arguments.SingleOrDefault(a => a.Name == "parameter");
             Assert.NotNull(optionalArgument);
             Assert.True(optionalArgument.IsRequired);
+        }
+
+        [Fact]
+        public void CommandLineParser_DetectMissingRequiredArguments()
+        {
+            var commands = new CommandGroup()
+            {
+                GlobalArguments = []
+            };
+            var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test6");
+            var commandLine = new string[] { "test6" };
+            var parser = new CommandLineParser(commands);
+            var result = parser.Parse(commandLine);
+            Assert.True(result.IsFailure);
         }
     }
 }
