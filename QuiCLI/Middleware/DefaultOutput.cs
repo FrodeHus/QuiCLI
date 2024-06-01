@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QuiCLI.Middleware
+﻿namespace QuiCLI.Middleware
 {
     internal class DefaultOutput(QuicMiddlewareDelegate next) : QuicMiddleware(next)
     {
         public override async ValueTask<int> OnExecute(QuicCommandContext context)
         {
-            var result = await OnExecute(context);
-            Console.WriteLine(context.CommandResult?.ToString());
-            return 0;
+            context.CommandResult = context.CommandResult?.ToString();
+            return await Next(context);
         }
     }
 }
