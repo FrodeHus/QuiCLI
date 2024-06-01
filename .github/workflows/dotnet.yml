@@ -6,6 +6,10 @@ name: .NET
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - QuiCLI/**
+      - QuiCLI.Tests/**
+      - Samples/**
   pull_request:
     branches: [ "main" ]
 
