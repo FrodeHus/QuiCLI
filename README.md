@@ -3,9 +3,24 @@
 [![.NET](https://github.com/FrodeHus/QuiCLI/actions/workflows/dotnet.yml/badge.svg)](https://github.com/FrodeHus/QuiCLI/actions/workflows/dotnet.yml)
 [![Publish](https://github.com/FrodeHus/QuiCLI/actions/workflows/nuget.yml/badge.svg)](https://github.com/FrodeHus/QuiCLI/actions/workflows/nuget.yml)
 
-A AOT-compatible lightweight framework for creating CLI applications.
+A lightweight framework for creating CLI applications with the primary focus of being compatible with AOT and trimming. This is to generate small and fast self-contained executables.
 
-## TL;DR
+Because of the restrictions imposed by trimming and AOT, the framework is designed to be as simple as possible. This means that it does not support certain features that are common in other CLI frameworks that requires extensive reflection.
+
+The framework is built on top of Microsoft.Extensions.DependencyInjection and Microsoft.Extensions.Configuration, which means that it is possible to use the same configuration and dependency injection system as in ASP.NET Core.
+
+As an example of an application that uses QuiCLI, see [SecurityCenterCLI](https://github.com/FrodeHus/SecurityCenterCLI).
+
+## Features
+
+- Dependency injection
+- Command line argument parsing
+- Command line argument help generation
+- Command line argument type conversion
+- Command line argument default values
+
+
+## Quick start
 
 ```csharp
 
