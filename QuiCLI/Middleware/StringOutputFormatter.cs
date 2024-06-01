@@ -1,6 +1,6 @@
 ﻿namespace QuiCLI.Middleware
 {
-    internal class DefaultOutput(QuicMiddlewareDelegate next) : QuicMiddleware(next)
+    internal class StringOutputFormatter(QuicMiddlewareDelegate next) : QuicMiddleware(next)
     {
         public override async ValueTask<int> OnExecute(QuicCommandContext context)
         {

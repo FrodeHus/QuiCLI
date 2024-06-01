@@ -42,7 +42,13 @@ public class QuicApp
         if (command is not null)
         {
             var context = new QuicCommandContext(command) { ServiceProvider = ServiceProvider };
-            await Pipeline(context);
+            var result = await Pipeline(context);
+            if(result == 0)
+            {
+                Console.WriteLine(context.CommandResult);
+            }
+            
+            Environment.Exit(result);
         }
         else
         {

@@ -16,7 +16,7 @@ namespace QuiCLI.Middleware
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine($"Unexpected error occured: {ex.Message}");
                 return 1;
             }
         }
