@@ -14,24 +14,22 @@ internal class HelpBuilder(CommandGroup rootCommandGroup)
         sb.AppendLine("Usage:");
         sb.AppendLine($" {groupName} <command> [arguments]");
         sb.AppendLine();
-        sb.AppendLine("Commands:");
+        var commandSection = new HelpSection("Commands");
         foreach (var command in rootCommandGroup.Commands)
         {
-            sb.Append($"\t{command.Key.Name}");
-            if (!string.IsNullOrWhiteSpace(command.Key.Help))
-            {
-                sb.AppendLine($"\t:\t{command.Key.Help}");
-            }
-            else
-            {
-                sb.AppendLine();
-            }
+            commandSection.Items.Add(new HelpCommand(command
+                .Key
+                .Name, command.Key.Help, command
+                    .Key
+                    .Arguments
+                    .ConvertAll(a => new HelpArgument(a.Name, a.IsRequired, a.IsFlag, a.Help))
+));
         }
-
+        sb.AppendLine(commandSection.ToString());
         sb.AppendLine();
         if (rootCommandGroup.SubGroups.Count > 0)
         {
-            sb.AppendLine("Nested Commands:");
+            var nestedSection = new HelpSection("Nested Commands");
             foreach (var group in rootCommandGroup.SubGroups)
             {
                 sb.AppendLine($"\t{group.Key}");
