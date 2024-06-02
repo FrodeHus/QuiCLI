@@ -75,7 +75,7 @@ namespace QuiCLI.Command
                     {
                         Name = ConvertCamelCaseToParameterName(parameter.Name!),
                         InternalName = parameter.Name!,
-                        IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable,
+                        IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable && !parameter.HasDefaultValue,
                         ValueType = parameter.ParameterType,
                         DefaultValue = parameter.HasDefaultValue ? parameter.DefaultValue : null
                     }
