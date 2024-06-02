@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using QuiCLI.Command;
 using QuiCLI.Middleware;
+using QuiCLI.Output;
+using System.Diagnostics.CodeAnalysis;
 
 namespace QuiCLI.Builder;
 
@@ -8,6 +10,10 @@ public class QuicAppBuilder
 {
     public IServiceCollection Services { get; init; }
     public IQuicPipelineBuilder Pipeline { get; init; }
+    internal Dictionary<string, IOutputFormatter> OutputFormatters { get; init; } = new Dictionary<string, IOutputFormatter>
+    {
+        { "table", new TableFormatter() }
+    };
     internal List<ArgumentDefinition> GlobalArguments { get; init; } = [];
     public QuicAppBuilder()
     {
@@ -15,7 +21,7 @@ public class QuicAppBuilder
         Pipeline = new QuicPipelineBuilder()
             .UseMiddleware<ExceptionHandler>()
             .UseMiddleware<CommandDispatcher>()
-            .UseMiddleware<StringOutputFormatter>();
+            .UseMiddleware<OutputFormatter>();
         InitDefaultGlobalArguments();
     }
 
@@ -47,6 +53,16 @@ public class QuicAppBuilder
         });
     }
 
+    public QuicAppBuilder AddOutputProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TProvider>(string friendlyName) where TProvider : IOutputFormatter
+    {
+        if (OutputFormatters.ContainsKey(friendlyName))
+        {
+            throw new InvalidOperationException($"Output provider with name {friendlyName} already exists");
+        }
+        OutputFormatters.Add(friendlyName, Activator.CreateInstance<TProvider>());
+        return this;
+    }
+
     public QuicApp Build()
     {
         var provider = Services.BuildServiceProvider();
@@ -56,6 +72,7 @@ public class QuicAppBuilder
             ServiceProvider = provider,
             Pipeline = Pipeline.Build(),
             GlobalArguments = GlobalArguments,
+            OutputFormatters = OutputFormatters,
             RootCommands = new CommandGroup() { GlobalArguments = GlobalArguments }
         };
     }

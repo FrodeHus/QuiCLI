@@ -2,6 +2,7 @@
 using QuiCLI.Command;
 using QuiCLI.Help;
 using QuiCLI.Middleware;
+using QuiCLI.Output;
 using System.Diagnostics.CodeAnalysis;
 
 namespace QuiCLI;
@@ -11,6 +12,7 @@ public class QuicApp
     public required IServiceProvider ServiceProvider { get; init; }
     public required QuicMiddlewareDelegate Pipeline { get; init; }
     public required CommandGroup RootCommands { get; init; }
+    internal Dictionary<string, IOutputFormatter> OutputFormatters { get; set; } = [];
     internal List<ArgumentDefinition> GlobalArguments { get; init; } = [];
     public static QuicAppBuilder CreateBuilder()
     {
@@ -30,6 +32,7 @@ public class QuicApp
         return RootCommands.AddCommandGroup(name);
     }
 
+    
     public void Run()
     {
         RunAsync().GetAwaiter().GetResult();
@@ -50,7 +53,12 @@ public class QuicApp
         if (command is not null)
         {
             var globalArguments = command.Arguments.Where(a => a.Argument.IsGlobal).ToList();
-            var context = new QuicCommandContext(command) { ServiceProvider = ServiceProvider, GlobalArguments = globalArguments };
+            var context = new QuicCommandContext(command)
+            {
+                ServiceProvider = ServiceProvider,
+                OutputFormatters = OutputFormatters,
+                GlobalArguments = globalArguments
+            };
             var executionResult = await Pipeline(context);
             if(executionResult == 0)
             {
