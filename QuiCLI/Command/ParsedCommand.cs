@@ -33,7 +33,7 @@
         {
             return Definition
                 .Arguments
-                .Where(a => a.IsRequired)
+                .Where(a => a.IsRequired && !a.IsGlobal)
                 .All(a => Arguments.Exists(arg => arg.Argument == a));
         }
     }
