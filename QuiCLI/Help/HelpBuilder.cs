@@ -79,4 +79,11 @@ internal class HelpBuilder(CommandGroup rootCommandGroup)
         }
         return sb.ToString();
     }
+
+    internal static IHelpItem GenerateHelp(CommandDefinition commandDefinition)
+    {
+        return new HelpCommand(commandDefinition.Name,
+                               commandDefinition.Help,
+                               commandDefinition.Arguments.ConvertAll(a => new HelpArgument(a.Name, a.IsRequired, a.IsFlag, a.Help)));
+    }
 }

@@ -38,54 +38,19 @@ namespace QuiCLI.Command
                 .GetMethods()
                 .Where(m => m.GetCustomAttribute<CommandAttribute>() is not null))
             {
-                var commandAttribute = method.GetCustomAttribute<CommandAttribute>();
-                if (commandAttribute is not null)
+                var result = CommandDefinition.FromMethod(method);
+                if (result.IsFailure)
                 {
-                    var arguments = new List<ArgumentDefinition>();
-                    arguments.AddRange(GlobalArguments);
-                    arguments.AddRange(GetArguments(method));
-
-                    var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Arguments = arguments.ToList(), Help = commandAttribute.Help };
-                    Commands.Add(
-                        definition,
-                        implementationFactory);
-                    addedCommands.Add(definition);
+                    continue;
                 }
+
+                result.Value.Arguments.AddRange(GlobalArguments);
+                Commands.Add(
+                    result.Value,
+                    implementationFactory);
+                addedCommands.Add(result.Value);
             }
             return addedCommands;
-        }
-
-        private static IEnumerable<ArgumentDefinition> GetArguments(MethodInfo method)
-        {
-            var parameters = method.GetParameters();
-            var nullabilityContext = new NullabilityInfoContext();
-            foreach (var parameter in parameters)
-            {
-                var nullabilityInfo = nullabilityContext.Create(parameter);
-                yield return parameter.ParameterType switch
-                {
-                    Type t when t == typeof(bool) => new ArgumentDefinition
-                    {
-                        Name = ConvertCamelCaseToParameterName(parameter.Name!),
-                        InternalName = parameter.Name!,
-                        IsFlag = true,
-                        IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable
-                    },
-                    _ => new ArgumentDefinition
-                    {
-                        Name = ConvertCamelCaseToParameterName(parameter.Name!),
-                        InternalName = parameter.Name!,
-                        IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable,
-                        ValueType = parameter.ParameterType,
-                        DefaultValue = parameter.HasDefaultValue ? parameter.DefaultValue : null
-                    }
-                };
-            }
-        }
-
-        private static string ConvertCamelCaseToParameterName(string name)
-        {
-            return string.Concat(name.Select((x, i) => i > 0 && char.IsUpper(x) ? "-" + x.ToString() : x.ToString())).ToLowerInvariant();
         }
     }
 }

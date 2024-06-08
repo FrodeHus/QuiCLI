@@ -10,6 +10,7 @@ namespace QuiCLI.Common
     {
         NoError = 0,
         InvalidArgument = 100,
-        MissingRequiredArgument = 101
+        MissingRequiredArgument = 101,
+        CommandNotDefined = 200
     }
 }
