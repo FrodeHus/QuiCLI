@@ -22,7 +22,7 @@ internal class HelpCommand(string name, string? help, List<HelpArgument>? argume
             sb.AppendLine("Arguments:");
             foreach (var arg in Arguments)
             {
-                sb.AppendLine($"\t{arg}");
+                sb.AppendLine($"\t--{arg.Name} {(arg.IsFlag ? "" : "<value>")} {(arg.IsRequired ? "[required]" : "")}");
             }
         }
         return sb.ToString();
