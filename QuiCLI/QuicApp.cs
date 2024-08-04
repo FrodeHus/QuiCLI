@@ -8,6 +8,7 @@ namespace QuiCLI;
 
 public class QuicApp
 {
+    public required Configuration Configuration { get; init; }
     public required IServiceProvider ServiceProvider { get; init; }
     public required QuicMiddlewareDelegate Pipeline { get; init; }
     public required CommandGroup RootCommands { get; init; }
@@ -42,7 +43,7 @@ public class QuicApp
         if (result.IsFailure)
         {
             Console.WriteLine(result.Error);
-            var helpBuilder = new HelpBuilder(result.Value.CommandGroup ?? RootCommands);
+            var helpBuilder = new HelpBuilder(result.Value.CommandGroup ?? RootCommands, Configuration);
             Console.WriteLine(helpBuilder.BuildHelp());
             Environment.Exit(1);
         }
@@ -50,7 +51,7 @@ public class QuicApp
         if (command is not null)
         {
             var globalArguments = command.Arguments.Where(a => a.Argument.IsGlobal).ToList();
-            var context = new QuicCommandContext(command) { ServiceProvider = ServiceProvider, GlobalArguments = globalArguments };
+            var context = new QuicCommandContext(command, Configuration) { ServiceProvider = ServiceProvider, GlobalArguments = globalArguments };
             var executionResult = await Pipeline(context);
             if(executionResult == 0)
             {
@@ -61,7 +62,7 @@ public class QuicApp
         }
         else
         {
-            var helpBuilder = new HelpBuilder(result.Value.CommandGroup);
+            var helpBuilder = new HelpBuilder(result.Value.CommandGroup, Configuration);
             Console.WriteLine(helpBuilder.BuildHelp());
         }
     }

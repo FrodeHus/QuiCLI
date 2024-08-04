@@ -1,4 +1,6 @@
-﻿namespace QuiCLI.Middleware
+﻿using QuiCLI.Builder;
+
+namespace QuiCLI.Middleware
 {
     internal class StringOutputFormatter(QuicMiddlewareDelegate next) : QuicMiddleware(next)
     {

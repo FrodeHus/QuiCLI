@@ -14,7 +14,7 @@ public class MiddlewareTests
 
         // Act
         var pipeline = builder.Build();
-        var context = new QuicCommandContext(null!) { ServiceProvider = null! };
+        var context = new QuicCommandContext(null!, new QuiCLI.Builder.Configuration()) { ServiceProvider = null! };
         var result = await pipeline(context);
         // Assert
         Assert.NotNull(pipeline);

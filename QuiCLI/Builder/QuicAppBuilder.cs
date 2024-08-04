@@ -6,9 +6,16 @@ namespace QuiCLI.Builder;
 
 public class QuicAppBuilder
 {
+    public void Configure(Action<Configuration> configureDelegate)
+    {
+        configureDelegate(Configuration);
+    }
+
+    internal Configuration Configuration { get; } = new Configuration();
     public IServiceCollection Services { get; init; }
     public IQuicPipelineBuilder Pipeline { get; init; }
     internal List<ArgumentDefinition> GlobalArguments { get; init; } = [];
+    
     public QuicAppBuilder()
     {
         Services = new ServiceCollection();
@@ -53,6 +60,7 @@ public class QuicAppBuilder
 
         return new QuicApp
         {
+            Configuration = Configuration,
             ServiceProvider = provider,
             Pipeline = Pipeline.Build(),
             GlobalArguments = GlobalArguments,
