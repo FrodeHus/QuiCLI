@@ -1,15 +1,21 @@
-﻿using QuiCLI.Command;
+﻿using QuiCLI.Builder;
+using QuiCLI.Command;
 using System.Text;
 
 namespace QuiCLI.Help;
 
-internal class HelpBuilder(CommandGroup rootCommandGroup)
+internal class HelpBuilder(CommandGroup rootCommandGroup, Configuration configuration)
 {
     private readonly CommandGroup rootCommandGroup = rootCommandGroup;
+    private readonly Configuration configuration = configuration;
 
     public string BuildHelp()
     {
         var sb = new StringBuilder();
+        if (configuration.CustomBanner is not null)
+        {
+            sb.AppendLine(configuration.CustomBanner());
+        }
         var groupName = rootCommandGroup.Name ?? "";
         sb.AppendLine("Usage:");
         sb.AppendLine($" {groupName} <command> [arguments]");
@@ -52,6 +58,11 @@ internal class HelpBuilder(CommandGroup rootCommandGroup)
     public string BuildHelp(CommandDefinition commandDefinition)
     {
         var sb = new StringBuilder();
+        if (configuration.CustomBanner is not null)
+        {
+            sb.AppendLine(configuration.CustomBanner());
+        }
+
         sb.AppendLine($"Usage: {commandDefinition.Name}");
         if (!string.IsNullOrWhiteSpace(commandDefinition.Help))
         {

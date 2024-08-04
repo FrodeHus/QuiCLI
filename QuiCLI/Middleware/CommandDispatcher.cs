@@ -1,4 +1,5 @@
-﻿using QuiCLI.Command;
+﻿using QuiCLI.Builder;
+using QuiCLI.Command;
 using QuiCLI.Help;
 using QuiCLI.Internal;
 
@@ -9,7 +10,7 @@ internal sealed class CommandDispatcher(QuicMiddlewareDelegate next) : QuicMiddl
     public override async ValueTask<int> OnExecute(QuicCommandContext context)
     {
         var (_, instance) = GetCommandInstance(context.Command, context.ServiceProvider);
-        var result = await GetCommandOutput(instance, context.Command);
+        var result = await GetCommandOutput(instance, context.Command, context.Configuration);
         context.CommandResult = result;
         return await Next(context);
     }
@@ -20,11 +21,11 @@ internal sealed class CommandDispatcher(QuicMiddlewareDelegate next) : QuicMiddl
         return (parsedCommand.Definition, implementationFactory.Invoke(serviceProvider));
     }
 
-    internal static async Task<object?> GetCommandOutput(object commandInstance, ParsedCommand parsedCommand)
+    internal async Task<object?> GetCommandOutput(object commandInstance, ParsedCommand parsedCommand, Configuration configuration)
     {
         if (RequestedHelp(parsedCommand))
         {
-            var helpBuilder = new HelpBuilder(parsedCommand.CommandGroup!);
+            var helpBuilder = new HelpBuilder(parsedCommand.CommandGroup!, configuration);
             return helpBuilder.BuildHelp(parsedCommand.Definition);
         }
         return await Dispatcher.InvokeAsync(commandInstance, parsedCommand);
