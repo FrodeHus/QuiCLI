@@ -58,18 +58,16 @@ myapp hello --name "World"
 ```
 
 ```cmd
-sampleapp.exe --help
+sampleapp.exe hello --help
 
-Usage:
-  <command> [arguments]
+Welcome to SampleApp!
+Usage: hello
 
-Commands:
-        hello
-
-Nested Commands:
-        sub-group
+Arguments:
+        --name          :       <String> [required]
+        --year          :       <Int32>
 
 Global Arguments:
-        --help  :       Show help information
+        --help          :       Show help information
         --output        :       Output format
 ```
