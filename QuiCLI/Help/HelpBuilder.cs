@@ -81,6 +81,12 @@ internal class HelpBuilder(CommandGroup rootCommandGroup, Configuration configur
             {
                 sb.Append(" [required]");
             }
+
+            if(argument.DefaultValue is not null)
+            {
+                sb.Append($" (default: {argument.DefaultValue})");
+            }
+
             sb.AppendLine();
         }
 
