@@ -31,7 +31,8 @@
 
         public bool ValidateArguments()
         {
-            return Definition
+            return Arguments.Any(arg => arg.Name.Equals("help", StringComparison.OrdinalIgnoreCase)) ||
+                Definition
                 .Arguments
                 .Where(a => a.IsRequired && !a.IsGlobal)
                 .All(a => Arguments.Exists(arg => arg.Argument == a));
