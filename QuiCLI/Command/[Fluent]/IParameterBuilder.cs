@@ -6,5 +6,5 @@ public interface IParameterBuilder
     IParameterBuilder IsFlag();
     IParameterBuilder WithDescription(string description);
     IParameterBuilder WithDefaultValue(object value);
-
+    IParameterBuilder WithValueType(Type type);
 }

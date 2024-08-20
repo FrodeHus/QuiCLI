@@ -33,7 +33,7 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
     {
         var unaryExpression = (UnaryExpression)expression.Body;
         var methodCallExpression = (MethodCallExpression)unaryExpression.Operand;
-        
+
         var constant = (ConstantExpression?)methodCallExpression.Object;
         if (constant is null)
         {
@@ -41,16 +41,55 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
         }
 
         _commandMethod = (MethodInfo)constant.Value!;
+        var parameters = GenerateParameterDefinitions(_commandMethod);
         return this;
     }
-
     object IBuilderState.Build()
     {
+        if (_commandMethod is null || _implementationFactory is null)
+        {
+            throw new InvalidOperationException("Command method and implementation factory must be set");
+        }
+
         return new CommandDefinition(_commandName)
         {
-            Arguments = Parameters.ConvertAll(p => (ParameterDefinition)p.Build()),
+            Arguments = GenerateParameterDefinitions(_commandMethod).ToList(),
             Method = _commandMethod,
             ImplementationFactory = _implementationFactory
         };
     }
+
+    private IEnumerable<ParameterDefinition> GenerateParameterDefinitions(MethodInfo methodInfo)
+    {
+        var parameters = methodInfo.GetParameters();
+        var nullabilityContext = new NullabilityInfoContext();
+        foreach (var parameter in parameters)
+        {
+            var nullabilityInfo = nullabilityContext.Create(parameter);
+            yield return parameter.ParameterType switch
+            {
+                Type t when t == typeof(bool) => new ParameterDefinition
+                {
+                    Name = ConvertCamelCaseToParameterName(parameter.Name!),
+                    InternalName = parameter.Name!,
+                    IsFlag = true,
+                    IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable
+                },
+                _ => new ParameterDefinition
+                {
+                    Name = ConvertCamelCaseToParameterName(parameter.Name!),
+                    InternalName = parameter.Name!,
+                    IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable && !parameter.HasDefaultValue,
+                    ValueType = parameter.ParameterType,
+                    DefaultValue = parameter.HasDefaultValue ? parameter.DefaultValue : null
+                }
+            };
+        }
+    }
+
+    private static string ConvertCamelCaseToParameterName(string name)
+    {
+        return string.Concat(name.Select((x, i) => i > 0 && char.IsUpper(x) ? "-" + x.ToString() : x.ToString())).ToLowerInvariant();
+    }
+
 }

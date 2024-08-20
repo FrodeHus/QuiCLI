@@ -6,6 +6,7 @@ internal sealed class ParameterBuilderState : IBuilderState, IParameterBuilder
     private bool _isFlag;
     private object? _defaultValue;
     private string? _description;
+    private Type? _valueType;
 
     internal ParameterBuilderState()
     {
@@ -45,6 +46,12 @@ internal sealed class ParameterBuilderState : IBuilderState, IParameterBuilder
     IParameterBuilder IParameterBuilder.WithDescription(string description)
     {
         _description = description;
+        return this;
+    }
+
+    IParameterBuilder IParameterBuilder.WithValueType(Type type)
+    {
+        _valueType = type;
         return this;
     }
 }
