@@ -58,14 +58,14 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
         return (command, _currentCommandGroup ?? rootCommandGroup);
     }
 
-    private static IEnumerable<ArgumentValue> FillDefaultValues(CommandDefinition commandDefinition)
+    private static IEnumerable<ParameterValue> FillDefaultValues(CommandDefinition commandDefinition)
     {
         return commandDefinition.Arguments
             .Where(a => a.DefaultValue != null && !a.IsFlag)
-            .Select(a => new ArgumentValue(a, a.DefaultValue!));
+            .Select(a => new ParameterValue(a, a.DefaultValue!));
     }
 
-    private static object EnsureValueType(ArgumentDefinition argumentDefinition, object value)
+    private static object EnsureValueType(ParameterDefinition argumentDefinition, object value)
     {
         if (argumentDefinition == null) return value;
         if (argumentDefinition.IsFlag)
@@ -116,7 +116,7 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
         }
         return argumentName;
     }
-    private static bool TryGetArgument(string arg, CommandDefinition commandDefinition, out ArgumentDefinition argument)
+    private static bool TryGetArgument(string arg, CommandDefinition commandDefinition, out ParameterDefinition argument)
     {
         var argumentName = GetArgumentName(arg);
         return commandDefinition.TryGetArgument(argumentName, out argument);

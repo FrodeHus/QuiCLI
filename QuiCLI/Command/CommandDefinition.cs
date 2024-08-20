@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace QuiCLI.Command
 {
@@ -6,10 +7,13 @@ namespace QuiCLI.Command
     {
         public string Name { get; init; } = name;
         public string? Help { get; init; } = description;
-        public required List<ArgumentDefinition> Arguments { get; init; }
-        public MethodInfo? Method { get; set; }
+        public required List<ParameterDefinition> Arguments { get; init; }
+        internal MethodInfo? Method { get; set; }
+        internal Func<IServiceProvider, object>? ImplementationFactory { get; set; }
 
-        public bool TryGetArgument(string name, out ArgumentDefinition argumentDefinition)
+
+
+        public bool TryGetArgument(string name, out ParameterDefinition argumentDefinition)
         {
             if (Arguments.Any(a => a.Name == name))
             {

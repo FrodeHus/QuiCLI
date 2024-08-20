@@ -5,7 +5,7 @@
         public string Name { get; init; }
         public CommandDefinition Definition { get; set; }
         public CommandGroup CommandGroup { get; set; }
-        public List<ArgumentValue> Arguments { get; } = [];
+        public List<ParameterValue> Arguments { get; } = [];
 
         public ParsedCommand(string name, CommandDefinition definition, CommandGroup group)
         {
@@ -19,14 +19,14 @@
             CommandGroup = group;
         }
 
-        public void AddArgument(ArgumentDefinition argument, object value)
+        public void AddArgument(ParameterDefinition argument, object value)
         {
             if (argument is null)
             {
                 throw new ArgumentException($"'{nameof(argument)}' cannot be null or empty.", nameof(argument));
             }
 
-            Arguments.Add(new ArgumentValue(argument, value));
+            Arguments.Add(new ParameterValue(argument, value));
         }
 
         public bool ValidateArguments()
