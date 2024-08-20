@@ -1,6 +1,6 @@
 ﻿namespace QuiCLI.Command;
 
-public sealed class CommandBuilder : ICommandBuilder
+public sealed class CommandBuilder : ICommandBuilder, IBuildCommands
 {
     private readonly List<IBuilderState> _commands = [];
 
@@ -8,10 +8,6 @@ public sealed class CommandBuilder : ICommandBuilder
     {
     }
 
-    internal IEnumerable<CommandDefinition> Build()
-    {
-        return _commands.ConvertAll(c => (CommandDefinition)(c).Build());
-    }
     IConfigureCommandInstance<TCommand> ICommandBuilder.AddCommand<TCommand>(string command) where TCommand : class
     {
         var state = new CommandBuilderState<TCommand>(command);
@@ -24,5 +20,11 @@ public sealed class CommandBuilder : ICommandBuilder
     internal static ICommandBuilder CreateBuilder()
     {
         return new CommandBuilder();
+    }
+
+    IEnumerable<CommandDefinition> IBuildCommands.Build()
+    {
+        return _commands.ConvertAll(c => (CommandDefinition)(c).Build());
+
     }
 }

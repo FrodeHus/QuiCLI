@@ -33,8 +33,14 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
     {
         var unaryExpression = (UnaryExpression)expression.Body;
         var methodCallExpression = (MethodCallExpression)unaryExpression.Operand;
-        var methodInfoExpression = (ConstantExpression)methodCallExpression.Arguments[^1];
-        _commandMethod = (MethodInfo?)methodInfoExpression.Value;
+        
+        var constant = (ConstantExpression?)methodCallExpression.Object;
+        if (constant is null)
+        {
+            throw new ArgumentException("Method must be an instance method");
+        }
+
+        _commandMethod = (MethodInfo)constant.Value!;
         return this;
     }
 

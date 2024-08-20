@@ -7,14 +7,14 @@ namespace QuiCLI.Command
     {
         public string? Name { get; init; } = name;
         public required List<ParameterDefinition> GlobalArguments { get; init; }
-        public Dictionary<CommandDefinition, Func<IServiceProvider, object>> Commands
+        public List<CommandDefinition> Commands
         {
-            get;
+            get; internal set;
         } = [];
 
         public Dictionary<string, CommandGroup> SubGroups
         {
-            get;
+            get; internal set;
         } = [];
 
         public CommandGroup AddCommandGroup(string name)
@@ -24,10 +24,9 @@ namespace QuiCLI.Command
             return group;
         }
 
-        public (CommandDefinition, Func<IServiceProvider, object>) GetCommand(string name)
+        public CommandDefinition? GetCommand(string name)
         {
-            var kvp = Commands.FirstOrDefault(c => c.Key.Name == name);
-            return (kvp.Key, kvp.Value);
+            return Commands.FirstOrDefault(c => c.Name == name);
         }
 
         public IEnumerable<CommandDefinition> AddCommand<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] TCommand>(Func<IServiceProvider, TCommand> implementationFactory)
@@ -45,10 +44,8 @@ namespace QuiCLI.Command
                     arguments.AddRange(GlobalArguments);
                     arguments.AddRange(GetArguments(method));
 
-                    var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Arguments = arguments.ToList(), Help = commandAttribute.Help };
-                    Commands.Add(
-                        definition,
-                        implementationFactory);
+                    var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Arguments = arguments.ToList(), Help = commandAttribute.Help, ImplementationFactory = implementationFactory };
+                    Commands.Add(definition);
                     addedCommands.Add(definition);
                 }
             }

@@ -60,13 +60,15 @@ public class QuicAppBuilder
     {
         var provider = Services.BuildServiceProvider();
 
+        var commands = ((IBuildCommands)Commands).Build();
+
         return new QuicApp
         {
             Configuration = Configuration,
             ServiceProvider = provider,
             Pipeline = Pipeline.Build(),
             GlobalArguments = GlobalArguments,
-            RootCommands = new CommandGroup() { GlobalArguments = GlobalArguments }
+            RootCommands = new CommandGroup() { GlobalArguments = GlobalArguments, Commands = commands.ToList() }
         };
     }
 }

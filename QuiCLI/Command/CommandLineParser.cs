@@ -156,7 +156,7 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
             return false;
         }
 
-        (definition, _) = _currentCommandGroup.GetCommand(name);
+        definition = _currentCommandGroup.GetCommand(name);
         return definition != null;
     }
 }

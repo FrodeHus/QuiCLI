@@ -18,7 +18,20 @@ namespace QuiCLI.Tests.Builder
 
             // Assert
             Assert.Equal(6, app.RootCommands.Commands.Count);
-            Assert.Equal("test", app.RootCommands.Commands.First().Key.Name);
+            Assert.Equal("test", app.RootCommands.Commands.First().Name);
+        }
+
+        [Fact]
+        public void Fluent_CreateCommand()
+        {
+            // Arrange
+            var builder = new QuicAppBuilder();
+            builder.Commands.AddCommand<TestCommand>("test")
+                .Configure(sp => new TestCommand())
+                .UseMethod(x => x.Test);
+            var app = builder.Build();
+
+            Assert.Single(app.RootCommands.Commands);
         }
     }
 }
