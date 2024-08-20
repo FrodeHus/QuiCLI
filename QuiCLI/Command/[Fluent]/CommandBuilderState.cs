@@ -15,13 +15,6 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
         _commandName = command;
     }
 
-    IParameterBuilder ICommandState<TCommand>.WithParameter(string parameter, string? help)
-    {
-        var parameterState = new ParameterBuilderState();
-        Parameters.Add(parameterState);
-        return parameterState;
-    }
-
 
     IConfigureCommandMethod<TCommand> IConfigureCommandInstance<TCommand>.Configure(Func<IServiceProvider, TCommand> implementationFactory)
     {
@@ -58,6 +51,10 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
             ImplementationFactory = _implementationFactory
         };
     }
+    ICommandState<TCommand> ICommandState<TCommand>.WithGroup(string groupName)
+    {
+        throw new NotImplementedException();
+    }
 
     private IEnumerable<ParameterDefinition> GenerateParameterDefinitions(MethodInfo methodInfo)
     {
@@ -65,6 +62,8 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
         var nullabilityContext = new NullabilityInfoContext();
         foreach (var parameter in parameters)
         {
+            var parameterDescriptor = parameter.GetCustomAttribute<ParameterAttribute>();
+
             var nullabilityInfo = nullabilityContext.Create(parameter);
             yield return parameter.ParameterType switch
             {
@@ -73,7 +72,8 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
                     Name = ConvertCamelCaseToParameterName(parameter.Name!),
                     InternalName = parameter.Name!,
                     IsFlag = true,
-                    IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable
+                    IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable,
+                    Help = parameterDescriptor?.Help
                 },
                 _ => new ParameterDefinition
                 {
@@ -81,7 +81,8 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
                     InternalName = parameter.Name!,
                     IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable && !parameter.HasDefaultValue,
                     ValueType = parameter.ParameterType,
-                    DefaultValue = parameter.HasDefaultValue ? parameter.DefaultValue : null
+                    DefaultValue = parameter.HasDefaultValue ? parameter.DefaultValue : null,
+                    Help = parameterDescriptor?.Help
                 }
             };
         }

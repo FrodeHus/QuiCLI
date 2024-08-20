@@ -6,6 +6,7 @@ namespace QuiCLI.Command
     public class CommandGroup(string? name = null)
     {
         public string? Name { get; init; } = name;
+
         public required List<ParameterDefinition> GlobalArguments { get; init; }
         public List<CommandDefinition> Commands
         {
