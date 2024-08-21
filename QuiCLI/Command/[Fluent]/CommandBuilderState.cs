@@ -16,15 +16,10 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
     }
 
 
-    IConfigureCommandMethod<TCommand> IConfigureCommandInstance<TCommand>.Configure(Func<IServiceProvider, TCommand> implementationFactory)
+    ICommandState<TCommand> IConfigureCommandInstance<TCommand>.Configure(Func<IServiceProvider, TCommand> implementationFactory, Expression<Func<TCommand, Delegate>> commandDelegate)
     {
         _implementationFactory = implementationFactory;
-        return this;
-    }
-
-    ICommandState<TCommand> IConfigureCommandMethod<TCommand>.UseMethod(Expression<Func<TCommand, Delegate>> expression)
-    {
-        var unaryExpression = (UnaryExpression)expression.Body;
+        var unaryExpression = (UnaryExpression)commandDelegate.Body;
         var methodCallExpression = (MethodCallExpression)unaryExpression.Operand;
 
         var constant = (ConstantExpression?)methodCallExpression.Object;
@@ -37,6 +32,7 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
         var parameters = GenerateParameterDefinitions(_commandMethod);
         return this;
     }
+
     object IBuilderState.Build()
     {
         if (_commandMethod is null || _implementationFactory is null)

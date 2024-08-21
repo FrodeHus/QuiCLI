@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Linq.Expressions;
 
 namespace QuiCLI.Command;
 
 public interface IConfigureCommandInstance<TCommand> where TCommand : class
 {
-    IConfigureCommandMethod<TCommand> Configure(Func<IServiceProvider, TCommand> commandFactory);
+    ICommandState<TCommand> Configure(Func<IServiceProvider, TCommand> commandFactory, Expression<Func<TCommand, Delegate>> commandDelegate);
 }
