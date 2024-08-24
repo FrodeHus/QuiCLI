@@ -116,10 +116,25 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
         }
         return argumentName;
     }
-    private static bool TryGetArgument(string arg, CommandDefinition commandDefinition, out ParameterDefinition argument)
+    private bool TryGetArgument(string arg, CommandDefinition commandDefinition, out ParameterDefinition argument)
     {
         var argumentName = GetArgumentName(arg);
-        return commandDefinition.TryGetArgument(argumentName, out argument);
+
+        if (commandDefinition.TryGetArgument(argumentName, out argument))
+        {
+            return true;
+        }
+        if (_currentCommandGroup != null)
+        {
+
+            var globalArgument = _currentCommandGroup.GlobalArguments.Find(argument => argument.Name == argumentName);
+            if (globalArgument != null)
+            {
+                argument = globalArgument;
+                return true;
+            }
+        }
+        return false;
     }
 
     private static bool TryGetArgumentValue(string arg, out string? value)

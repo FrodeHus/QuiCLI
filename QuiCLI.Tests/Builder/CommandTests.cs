@@ -18,7 +18,7 @@ namespace QuiCLI.Tests.Builder
 
             // Assert
             Assert.Equal(6, app.RootCommands.Commands.Count);
-            Assert.Equal("test", app.RootCommands.Commands.First().Name);
+            Assert.Equal("test", app.RootCommands.Commands[0].Name);
         }
 
         [Fact]
@@ -31,6 +31,7 @@ namespace QuiCLI.Tests.Builder
             var app = builder.Build();
 
             Assert.Single(app.RootCommands.Commands);
+            Assert.Equal("test", app.RootCommands.Commands[0].Name);
         }
     }
 }

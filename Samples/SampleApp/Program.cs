@@ -9,6 +9,5 @@ builder.Commands.AddCommand<HelloCommand>("hello")
 
 var app = builder.Build();
 
-app.AddCommand(_ => new HelloCommand());
 app.AddCommandGroup("sub-group").AddCommand(_ => new HelloCommand());
 app.Run();
