@@ -9,7 +9,7 @@ public class QuicCommandContext(ParsedCommand command, Configuration configurati
 {
     public ParsedCommand Command { get; } = command;
     public Configuration Configuration { get; } = configuration;
-    public List<ArgumentValue> GlobalArguments { get; init; } = [];
+    public List<ParameterValue> GlobalArguments { get; init; } = [];
     public required IServiceProvider ServiceProvider { get; init; }
     public object? CommandResult { get; internal set; }
 }

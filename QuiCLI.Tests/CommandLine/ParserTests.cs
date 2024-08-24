@@ -10,7 +10,7 @@ namespace QuiCLI.Tests.CommandLine
         {
             var commandGroup = new CommandGroup()
             {
-                GlobalArguments = [new ArgumentDefinition { Name = "help", InternalName = "help" }]
+                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
             };
             var command = commandGroup.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "test2", "--parameter= world" };
@@ -28,7 +28,7 @@ namespace QuiCLI.Tests.CommandLine
         {
             var commands = new CommandGroup()
             {
-                GlobalArguments = [new ArgumentDefinition { Name = "help", InternalName = "help" }]
+                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
             };
             var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "test2", "--parameter", "Foo" };
@@ -50,7 +50,7 @@ namespace QuiCLI.Tests.CommandLine
         {
             var commands = new CommandGroup()
             {
-                GlobalArguments = [new ArgumentDefinition { Name = "help", InternalName = "help" }]
+                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
             };
             var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == commandName);
             var commandLine = new string[] { commandName, "--parameter", value?.ToString()! };
@@ -68,7 +68,7 @@ namespace QuiCLI.Tests.CommandLine
         {
             var commands = new CommandGroup()
             {
-                GlobalArguments = [new ArgumentDefinition { Name = "help", InternalName = "help" }]
+                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
             };
             commands.AddCommandGroup("group1").AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "group1", "test2", "--parameter", "test" };
@@ -86,7 +86,7 @@ namespace QuiCLI.Tests.CommandLine
         {
             var commands = new CommandGroup()
             {
-                GlobalArguments = [new ArgumentDefinition { Name = "help", InternalName = "help" }]
+                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
             };
             var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
             var commandLine = new string[] { "test2", "--parameter", "test", "--help" };
@@ -104,7 +104,7 @@ namespace QuiCLI.Tests.CommandLine
         {
             var commands = new CommandGroup()
             {
-                GlobalArguments = [new ArgumentDefinition { Name = "help", InternalName = "help" }]
+                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
             };
             var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test6");
             var optionalArgument = command.Arguments.SingleOrDefault(a => a.Name == "parameter2");
@@ -116,7 +116,7 @@ namespace QuiCLI.Tests.CommandLine
         {
             var commands = new CommandGroup()
             {
-                GlobalArguments = [new ArgumentDefinition { Name = "help", InternalName = "help" }]
+                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
             };
             var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test6");
             var optionalArgument = command.Arguments.SingleOrDefault(a => a.Name == "parameter");

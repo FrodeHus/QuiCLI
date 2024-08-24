@@ -20,7 +20,7 @@ namespace QuiCLI.Internal
             return result;
         }
 
-        private static object?[]? GetParameters(List<ArgumentValue> values, List<ArgumentDefinition> parameters)
+        private static object?[]? GetParameters(List<ParameterValue> values, List<ParameterDefinition> parameters)
         {
             if (parameters.Count == 0)
             {

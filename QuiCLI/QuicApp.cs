@@ -12,7 +12,7 @@ public class QuicApp
     public required IServiceProvider ServiceProvider { get; init; }
     public required QuicMiddlewareDelegate Pipeline { get; init; }
     public required CommandGroup RootCommands { get; init; }
-    internal List<ArgumentDefinition> GlobalArguments { get; init; } = [];
+    internal List<ParameterDefinition> GlobalArguments { get; init; } = [];
     public static QuicAppBuilder CreateBuilder()
     {
         return new QuicAppBuilder();

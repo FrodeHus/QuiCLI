@@ -17,8 +17,7 @@ internal sealed class CommandDispatcher(QuicMiddlewareDelegate next) : QuicMiddl
 
     internal static (CommandDefinition, object) GetCommandInstance(ParsedCommand parsedCommand, IServiceProvider serviceProvider)
     {
-        var (_, implementationFactory) = parsedCommand.CommandGroup!.GetCommand(parsedCommand.Name);
-        return (parsedCommand.Definition, implementationFactory.Invoke(serviceProvider));
+        return (parsedCommand.Definition, parsedCommand.Definition.ImplementationFactory!.Invoke(serviceProvider));
     }
 
     internal async Task<object?> GetCommandOutput(object commandInstance, ParsedCommand parsedCommand, Configuration configuration)

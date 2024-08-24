@@ -12,13 +12,15 @@ public class QuicAppBuilder
     }
 
     internal Configuration Configuration { get; } = new Configuration();
+    public ICommandBuilder Commands { get; init; }
     public IServiceCollection Services { get; init; }
     public IQuicPipelineBuilder Pipeline { get; init; }
-    internal List<ArgumentDefinition> GlobalArguments { get; init; } = [];
+    internal List<ParameterDefinition> GlobalArguments { get; init; } = [];
     
     public QuicAppBuilder()
     {
         Services = new ServiceCollection();
+        Commands = CommandBuilder.CreateBuilder();
         Pipeline = new QuicPipelineBuilder()
             .UseMiddleware<ExceptionHandler>()
             .UseMiddleware<CommandDispatcher>()
@@ -29,7 +31,7 @@ public class QuicAppBuilder
     internal void InitDefaultGlobalArguments()
     {
 
-        GlobalArguments.Add(new ArgumentDefinition
+        GlobalArguments.Add(new ParameterDefinition
         {
             Name = "help",
             InternalName = "help",
@@ -41,7 +43,7 @@ public class QuicAppBuilder
             ValueType = typeof(bool)
         });
 
-        GlobalArguments.Add(new ArgumentDefinition
+        GlobalArguments.Add(new ParameterDefinition
         {
             Name = "output",
             InternalName = "output",
@@ -58,13 +60,15 @@ public class QuicAppBuilder
     {
         var provider = Services.BuildServiceProvider();
 
+        var commands = ((IBuildCommands)Commands).Build();
+
         return new QuicApp
         {
             Configuration = Configuration,
             ServiceProvider = provider,
             Pipeline = Pipeline.Build(),
             GlobalArguments = GlobalArguments,
-            RootCommands = new CommandGroup() { GlobalArguments = GlobalArguments }
+            RootCommands = new CommandGroup() { GlobalArguments = GlobalArguments, Commands = commands.ToList() }
         };
     }
 }

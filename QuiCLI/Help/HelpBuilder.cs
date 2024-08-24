@@ -23,10 +23,10 @@ internal class HelpBuilder(CommandGroup rootCommandGroup, Configuration configur
         sb.AppendLine("Commands:");
         foreach (var command in rootCommandGroup.Commands)
         {
-            sb.Append($"\t{command.Key.Name}");
-            if (!string.IsNullOrWhiteSpace(command.Key.Help))
+            sb.Append($"\t{command.Name}");
+            if (!string.IsNullOrWhiteSpace(command.Help))
             {
-                sb.AppendLine($"\t:\t{command.Key.Help}");
+                sb.AppendLine($"\t:\t{command.Help}");
             }
             else
             {
