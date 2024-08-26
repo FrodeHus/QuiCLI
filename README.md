@@ -48,7 +48,6 @@ public class HelloCommand(MyService myService)
 {
 	private readonly MyService _service = myService;
 
-	[Command("hello")]
 	public string Hello(string name)
 	{
 		return $"Hello, {name}!";
