@@ -13,10 +13,10 @@ public sealed class CommandBuilder : ICommandBuilder, IBuildCommands
         _services = services;
     }
 
-    IConfigureCommandInstance<TCommand> ICommandBuilder.AddCommand<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TCommand>(string command) where TCommand : class
+    IConfigureCommandInstance<TCommand> ICommandBuilder.Add<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TCommand>() where TCommand : class
     {
         _services.AddTransient<TCommand>();
-        var state = new CommandBuilderState<TCommand>(command);
+        var state = new CommandBuilderState<TCommand>();
         _commands.Add(state);
         return state;
     }
@@ -30,7 +30,6 @@ public sealed class CommandBuilder : ICommandBuilder, IBuildCommands
 
     IEnumerable<CommandDefinition> IBuildCommands.Build()
     {
-        return _commands.ConvertAll(c => (CommandDefinition)(c).Build());
-
+        return _commands.SelectMany(command => command.Build().Select(commandDefinition => (CommandDefinition)commandDefinition));
     }
 }

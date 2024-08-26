@@ -4,5 +4,5 @@ namespace QuiCLI.Command;
 
 public interface IConfigureCommandInstance<TCommand> where TCommand : class
 {
-    ICommandState<TCommand> UseMethod(Expression<Func<TCommand, Delegate>> commandDelegate);
+    IConfigureCommandInstance<TCommand> WithCommand(string commandName, Expression<Func<TCommand, Delegate>> commandDelegate);
 }

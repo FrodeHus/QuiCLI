@@ -31,27 +31,35 @@ The only supported returns types for asynchronous commands are `Task<object>` an
 ```csharp
 
 using QuiCLI;
+using SampleApp;
 
 var builder = QuicApp.CreateBuilder();
-builder.Services.AddTransient<MyService>();
 builder.Configure(config => config.CustomBanner = () => "Welcome to SampleApp!");
 
-builder.Commands.AddCommand<HelloCommand>("hello")
-    .UseMethod(x => x.Hello);
+builder.Commands.Add<HelloCommand>()
+    .WithCommand("hello", x => x.Hello)
+    .WithCommand("bye", x => x.Bye);
 
 var app = builder.Build();
+
 app.Run();
+
 ```
 
 ```csharp
-public class HelloCommand(MyService myService)
+internal class HelloCommand
 {
-	private readonly MyService _service = myService;
+    public string Hello(
+        [Parameter(help: "Which name to greet")] string name,
+        [Parameter(help: "Define which year should be displayed")] int year = 2024)
+    {
+        return $"Hello, {name}! Welcome to {year}!";
+    }
 
-	public string Hello(string name)
-	{
-		return $"Hello, {name}!";
-	})
+    public string Bye(string name)
+    {
+        return $"Goodbye, {name}!";
+    }
 }
 ```
 

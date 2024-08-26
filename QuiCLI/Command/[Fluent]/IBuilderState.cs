@@ -2,5 +2,5 @@
 
 internal interface IBuilderState
 {
-    object Build();
+    IEnumerable<object> Build();
 }
