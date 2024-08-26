@@ -5,7 +5,7 @@ var builder = QuicApp.CreateBuilder();
 builder.Configure(config => config.CustomBanner = () => "Welcome to SampleApp!");
 
 builder.Commands.AddCommand<HelloCommand>("hello")
-    .Configure(_ => new HelloCommand(), x => x.Hello);
+    .UseMethod(x => x.Hello);
 
 var app = builder.Build();
 

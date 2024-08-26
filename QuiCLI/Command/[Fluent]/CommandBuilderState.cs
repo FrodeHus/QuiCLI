@@ -7,7 +7,6 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
 {
     private string _commandName;
     private MethodInfo? _commandMethod;
-    private Func<IServiceProvider, TCommand>? _implementationFactory;
     internal List<IBuilderState> Parameters = [];
 
     internal CommandBuilderState(string command)
@@ -16,9 +15,8 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
     }
 
 
-    ICommandState<TCommand> IConfigureCommandInstance<TCommand>.Configure(Func<IServiceProvider, TCommand> implementationFactory, Expression<Func<TCommand, Delegate>> commandDelegate)
+    ICommandState<TCommand> IConfigureCommandInstance<TCommand>.UseMethod(Expression<Func<TCommand, Delegate>> commandDelegate)
     {
-        _implementationFactory = implementationFactory;
         var unaryExpression = (UnaryExpression)commandDelegate.Body;
         var methodCallExpression = (MethodCallExpression)unaryExpression.Operand;
 
@@ -35,7 +33,7 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
 
     object IBuilderState.Build()
     {
-        if (_commandMethod is null || _implementationFactory is null)
+        if (_commandMethod is null)
         {
             throw new InvalidOperationException("Command method and implementation factory must be set");
         }
@@ -44,7 +42,6 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
         {
             Arguments = GenerateParameterDefinitions(_commandMethod).ToList(),
             Method = _commandMethod,
-            ImplementationFactory = _implementationFactory
         };
     }
     ICommandState<TCommand> ICommandState<TCommand>.WithGroup(string groupName)

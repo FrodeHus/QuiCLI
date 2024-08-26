@@ -27,7 +27,7 @@ namespace QuiCLI.Tests.Builder
             // Arrange
             var builder = new QuicAppBuilder();
             builder.Commands.AddCommand<TestCommand>("test")
-                .Configure(sp => new TestCommand(), x => x.Test);
+                .UseMethod(x => x.Test);
             var app = builder.Build();
 
             Assert.Single(app.RootCommands.Commands);

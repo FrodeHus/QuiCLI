@@ -20,7 +20,7 @@ public class QuicAppBuilder
     public QuicAppBuilder()
     {
         Services = new ServiceCollection();
-        Commands = CommandBuilder.CreateBuilder();
+        Commands = CommandBuilder.CreateBuilder(Services);
         Pipeline = new QuicPipelineBuilder()
             .UseMiddleware<ExceptionHandler>()
             .UseMiddleware<CommandDispatcher>()
