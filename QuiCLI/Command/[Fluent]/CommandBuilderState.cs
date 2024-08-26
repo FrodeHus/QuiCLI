@@ -5,17 +5,15 @@ namespace QuiCLI.Command;
 
 internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandState<TCommand> where TCommand : class
 {
-    private string _commandName;
-    private MethodInfo? _commandMethod;
+    private readonly Dictionary<string, MethodInfo> _commands = [];
     internal List<IBuilderState> Parameters = [];
 
-    internal CommandBuilderState(string command)
+    internal CommandBuilderState()
     {
-        _commandName = command;
     }
 
 
-    ICommandState<TCommand> IConfigureCommandInstance<TCommand>.UseMethod(Expression<Func<TCommand, Delegate>> commandDelegate)
+    IConfigureCommandInstance<TCommand> IConfigureCommandInstance<TCommand>.WithCommand(string commandName, Expression<Func<TCommand, Delegate>> commandDelegate)
     {
         var unaryExpression = (UnaryExpression)commandDelegate.Body;
         var methodCallExpression = (MethodCallExpression)unaryExpression.Operand;
@@ -26,23 +24,24 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
             throw new ArgumentException("Method must be an instance method");
         }
 
-        _commandMethod = (MethodInfo)constant.Value!;
-        var parameters = GenerateParameterDefinitions(_commandMethod);
+        var commandMethod = (MethodInfo)constant.Value!;
+        var parameters = GenerateParameterDefinitions(commandMethod);
+        _commands.Add(commandName, commandMethod);
         return this;
     }
 
-    object IBuilderState.Build()
+    IEnumerable<object> IBuilderState.Build()
     {
-        if (_commandMethod is null)
+        foreach(var command in _commands)
         {
-            throw new InvalidOperationException("Command method and implementation factory must be set");
+            var commandName = command.Key;
+            var commandMethod = command.Value;
+            yield return new CommandDefinition(commandName)
+            {
+                Arguments = GenerateParameterDefinitions(commandMethod).ToList(),
+                Method = commandMethod,
+            };
         }
-
-        return new CommandDefinition(_commandName)
-        {
-            Arguments = GenerateParameterDefinitions(_commandMethod).ToList(),
-            Method = _commandMethod,
-        };
     }
     ICommandState<TCommand> ICommandState<TCommand>.WithGroup(string groupName)
     {
