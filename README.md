@@ -34,9 +34,12 @@ using QuiCLI;
 
 var builder = QuicApp.CreateBuilder();
 builder.Services.AddTransient<MyService>();
-var app = builder.Build();
+builder.Configure(config => config.CustomBanner = () => "Welcome to SampleApp!");
 
-app.AddCommand((sp) => new HelloCommand(sp.GetRequiredService<MyService>()));
+builder.Commands.AddCommand<HelloCommand>("hello")
+    .UseMethod(x => x.Hello);
+
+var app = builder.Build();
 app.Run();
 ```
 
