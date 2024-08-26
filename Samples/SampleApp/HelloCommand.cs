@@ -11,5 +11,10 @@ namespace SampleApp
         {
             return $"Hello, {name}! Welcome to {year}!";
         }
+
+        public string Bye(string name)
+        {
+            return $"Goodbye, {name}!";
+        }
     }
 }

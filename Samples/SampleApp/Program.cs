@@ -4,8 +4,9 @@ using SampleApp;
 var builder = QuicApp.CreateBuilder();
 builder.Configure(config => config.CustomBanner = () => "Welcome to SampleApp!");
 
-builder.Commands.AddCommand<HelloCommand>("hello")
-    .UseMethod(x => x.Hello);
+builder.Commands.Add<HelloCommand>()
+    .WithCommand("hello", x => x.Hello)
+    .WithCommand("bye", x => x.Bye);
 
 var app = builder.Build();
 
