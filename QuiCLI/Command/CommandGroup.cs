@@ -45,7 +45,7 @@ namespace QuiCLI.Command
                     arguments.AddRange(GlobalArguments);
                     arguments.AddRange(GetArguments(method));
 
-                    var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Arguments = arguments.ToList(), Help = commandAttribute.Help, ImplementationFactory = implementationFactory };
+                    var definition = new CommandDefinition(commandAttribute.Name) { Method = method, Arguments = [.. arguments], Help = commandAttribute.Help};
                     Commands.Add(definition);
                     addedCommands.Add(definition);
                 }

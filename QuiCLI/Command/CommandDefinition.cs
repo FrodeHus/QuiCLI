@@ -9,8 +9,6 @@ namespace QuiCLI.Command
         public string? Help { get; init; } = description;
         public required List<ParameterDefinition> Arguments { get; init; }
         internal MethodInfo? Method { get; set; }
-        internal Func<IServiceProvider, object>? ImplementationFactory { get; set; }
-
 
 
         public bool TryGetArgument(string name, out ParameterDefinition argumentDefinition)

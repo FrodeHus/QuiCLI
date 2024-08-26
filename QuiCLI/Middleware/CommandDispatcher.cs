@@ -1,4 +1,5 @@
-﻿using QuiCLI.Builder;
+﻿using Microsoft.Extensions.DependencyInjection;
+using QuiCLI.Builder;
 using QuiCLI.Command;
 using QuiCLI.Help;
 using QuiCLI.Internal;
@@ -17,7 +18,8 @@ internal sealed class CommandDispatcher(QuicMiddlewareDelegate next) : QuicMiddl
 
     internal static (CommandDefinition, object) GetCommandInstance(ParsedCommand parsedCommand, IServiceProvider serviceProvider)
     {
-        return (parsedCommand.Definition, parsedCommand.Definition.ImplementationFactory!.Invoke(serviceProvider));
+        using var scope = serviceProvider.CreateScope();
+        return (parsedCommand.Definition, scope.ServiceProvider.GetRequiredService(parsedCommand.Definition.Method!.DeclaringType!));
     }
 
     internal async Task<object?> GetCommandOutput(object commandInstance, ParsedCommand parsedCommand, Configuration configuration)

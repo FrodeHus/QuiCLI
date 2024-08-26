@@ -1,15 +1,21 @@
-﻿namespace QuiCLI.Command;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
+
+namespace QuiCLI.Command;
 
 public sealed class CommandBuilder : ICommandBuilder, IBuildCommands
 {
     private readonly List<IBuilderState> _commands = [];
+    private readonly IServiceCollection _services;
 
-    private CommandBuilder()
+    private CommandBuilder(IServiceCollection services)
     {
+        _services = services;
     }
 
-    IConfigureCommandInstance<TCommand> ICommandBuilder.AddCommand<TCommand>(string command) where TCommand : class
+    IConfigureCommandInstance<TCommand> ICommandBuilder.AddCommand<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TCommand>(string command) where TCommand : class
     {
+        _services.AddTransient<TCommand>();
         var state = new CommandBuilderState<TCommand>(command);
         _commands.Add(state);
         return state;
@@ -17,9 +23,9 @@ public sealed class CommandBuilder : ICommandBuilder, IBuildCommands
 
 
 
-    internal static ICommandBuilder CreateBuilder()
+    internal static ICommandBuilder CreateBuilder(IServiceCollection services)
     {
-        return new CommandBuilder();
+        return new CommandBuilder(services);
     }
 
     IEnumerable<CommandDefinition> IBuildCommands.Build()
