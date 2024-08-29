@@ -2,7 +2,6 @@
 using QuiCLI.Command;
 using QuiCLI.Help;
 using QuiCLI.Middleware;
-using System.Diagnostics.CodeAnalysis;
 
 namespace QuiCLI;
 
@@ -19,18 +18,6 @@ public class QuicApp
     }
 
 
-    public QuicApp AddCommand<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] TCommand>(Func<IServiceProvider, TCommand> implementationFactory)
-        where TCommand : class
-    {
-        RootCommands.AddCommand(implementationFactory);
-        return this;
-    }
-
-    public CommandGroup AddCommandGroup(string name)
-    {
-        return RootCommands.AddCommandGroup(name);
-    }
-
     public void Run()
     {
         RunAsync().GetAwaiter().GetResult();
@@ -38,7 +25,7 @@ public class QuicApp
     public async Task RunAsync()
     {
 
-        var parser = new CommandLineParser(RootCommands);
+        var parser = new CommandLineParser(RootCommands, Configuration);
         var result = parser.Parse(Environment.GetCommandLineArgs().Skip(1).ToArray());
         if (result.IsFailure)
         {
@@ -53,11 +40,11 @@ public class QuicApp
             var globalArguments = command.Arguments.Where(a => a.Argument.IsGlobal).ToList();
             var context = new QuicCommandContext(command, Configuration) { ServiceProvider = ServiceProvider, GlobalArguments = globalArguments };
             var executionResult = await Pipeline(context);
-            if(executionResult == 0)
+            if (executionResult == 0)
             {
                 Console.WriteLine(context.CommandResult);
             }
-            
+
             Environment.Exit(executionResult);
         }
         else

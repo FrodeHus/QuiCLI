@@ -2,12 +2,12 @@
 
 namespace QuiCLI.Command;
 
-public interface ICommandBuilder
+public interface ICommandBuilder : IConfigureCommandGroup
 {
-    public IConfigureCommandInstance<TCommand> Add<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TCommand>() where TCommand : class;
+    public ICommandState<TCommand> Add<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TCommand>() where TCommand : class;
 }
 
-internal interface IBuildCommands
+internal interface IBuildCommandGroup
 {
-    IEnumerable<CommandDefinition> Build();
+    IEnumerable<CommandGroup> Build();
 }
