@@ -1,8 +1,10 @@
-﻿using QuiCLI;
+﻿using Microsoft.Extensions.DependencyInjection;
+using QuiCLI;
 using SampleApp;
 
 var builder = QuicApp.CreateBuilder();
 builder.Configure(config => config.CustomBanner = () => "Welcome to SampleApp!");
+builder.Services.AddTransient<GreeterService>();
 
 builder.Commands.Add<HelloCommand>()
     .WithCommand("hello", x => x.Hello)
