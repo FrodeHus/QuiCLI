@@ -44,7 +44,7 @@ public class QuicApp
             var executionResult = await Pipeline(context);
             if (executionResult == 0)
             {
-                Console.WriteLine(context.CommandResult);
+                Console.WriteLine(context.CommandResult ?? string.Empty);
             }
 
             Environment.ExitCode = executionResult;

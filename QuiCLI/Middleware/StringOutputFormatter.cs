@@ -5,6 +5,7 @@ internal class StringOutputFormatter(QuicMiddlewareDelegate next) : QuicMiddlewa
     public override async ValueTask<int> OnExecute(QuicCommandContext context)
     {
         context.CommandResult = context.CommandResult?.ToString();
+
         return await Next(context);
     }
 }

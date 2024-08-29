@@ -11,6 +11,7 @@ public class QuicCommandContext(ParsedCommand command, Configuration configurati
     public Configuration Configuration { get; } = configuration;
     public List<ParameterValue> GlobalArguments { get; init; } = [];
     public required IServiceProvider ServiceProvider { get; init; }
+
     public object? CommandResult { get; internal set; }
 }
 

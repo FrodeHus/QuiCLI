@@ -19,7 +19,7 @@ public class MiddlewareTests
         // Assert
         Assert.NotNull(pipeline);
         Assert.Equal(0, result);
-        Assert.Equal("Hello, world!", context.CommandResult);
+        Assert.Equal("Hello, world!", context.CommandResult!);
     }
 
     public class TestMiddleware(QuicMiddlewareDelegate next) : QuicMiddleware(next)
@@ -35,7 +35,8 @@ public class MiddlewareTests
     {
         public override async ValueTask<int> OnExecute(QuicCommandContext context)
         {
-            context.CommandResult += " world!";
+            if (context.CommandResult is not null)
+                context.CommandResult += " world!";
             return await Next(context);
         }
     }

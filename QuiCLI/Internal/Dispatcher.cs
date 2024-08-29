@@ -7,17 +7,37 @@ namespace QuiCLI.Internal
         public static async Task<object?> InvokeAsync(object instance, ParsedCommand command)
         {
             object?[]? parameters = GetParameters(command.Arguments, command.Definition.Parameters.Where(a => !a.IsGlobal).ToList());
-            var result = command.Definition.Method!.Invoke(instance, parameters);
-            if (result is Task<object> taskObject)
+            object? result;
+            if (command.Definition.Method!.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
             {
-                return await taskObject.ConfigureAwait(false);
+                
+                result = await GetSupportedAsyncResult(instance, command, parameters);
+                return result;
             }
+
+            result = command.Definition.Method!.Invoke(instance, parameters);
 
             if (result is Task task)
             {
                 await task.ConfigureAwait(false);
             }
             return result;
+        }
+
+        private static async Task<object?> GetSupportedAsyncResult(object instance, ParsedCommand command, object?[]? parameters)
+        {
+            var returnType = command.Definition.Method!.ReturnType;
+            if (returnType == typeof(Task))
+            {
+                await (Task)command.Definition.Method!.Invoke(instance, parameters)!;
+                return null;
+            }
+            return command.Definition.Method!.ReturnType switch
+            {
+                Type t when t == typeof(Task<string>) => await (Task<string>)command.Definition.Method!.Invoke(instance, parameters)!,
+                Type t when t == typeof(Task<object>) => await (Task<object>)command.Definition.Method!.Invoke(instance, parameters)!,
+                _ => throw new ArgumentException("Method must return either Task, Task<string> or Task<object>")
+            };
         }
 
         private static object?[]? GetParameters(List<ParameterValue> values, List<ParameterDefinition> parameters)
