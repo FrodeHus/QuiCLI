@@ -9,10 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuiCLI.Tests", "QuiCLI.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{254D17BB-973E-4668-8910-ABBFB9D54862}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "Samples\SampleApp\SampleApp.csproj", "{768B6B4E-C2B4-409B-AEB3-81BA693B7B0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "Samples\SampleApp\SampleApp.csproj", "{768B6B4E-C2B4-409B-AEB3-81BA693B7B0B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{88648FDF-FD61-4476-A4AE-675FD30CEFE4}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		README.md = README.md
 	EndProjectSection
 EndProject
