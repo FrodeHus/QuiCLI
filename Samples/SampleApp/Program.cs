@@ -8,7 +8,8 @@ builder.Commands.Add<HelloCommand>()
     .WithCommand("hello", x => x.Hello)
     .WithCommand("bye", x => x.Bye);
 
+builder.Commands.WithGroup("greetings").Add<HelloCommand>().WithCommand("sup", x => x.Hello);
+
 var app = builder.Build();
 
-app.AddCommandGroup("sub-group").AddCommand(_ => new HelloCommand());
 app.Run();

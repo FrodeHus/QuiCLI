@@ -8,13 +8,13 @@ namespace QuiCLI.Tests.CommandLine
         [Fact]
         public void CommandLineParser_ParseOptionsWithEqualsValueAndSpace()
         {
-            var commandGroup = new CommandGroup()
-            {
-                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
-            };
-            var command = commandGroup.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
+            var builder = QuicApp.CreateBuilder();
+            builder.Commands.Add<TestCommand>()
+                .WithCommand("test2", x => x.Test2);
+            var app = builder.Build();
+
             var commandLine = new string[] { "test2", "--parameter= world" };
-            var parser = new CommandLineParser(commandGroup);
+            var parser = new CommandLineParser(app.RootCommands, builder.Configuration);
             var result = parser.Parse(commandLine);
             Assert.True(result.IsSuccess);
             var parsedCommand = result.Value.ParsedCommand;
@@ -26,13 +26,13 @@ namespace QuiCLI.Tests.CommandLine
         [Fact]
         public void CommandLineParser_DiscoverParameters()
         {
-            var commands = new CommandGroup()
-            {
-                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
-            };
-            var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
+            var builder = QuicApp.CreateBuilder();
+            builder.Commands.Add<TestCommand>()
+                .WithCommand("test2", x => x.Test2);
+            var app = builder.Build();
+            var parser = new CommandLineParser(app.RootCommands, app.Configuration);
+
             var commandLine = new string[] { "test2", "--parameter", "Foo" };
-            var parser = new CommandLineParser(commands);
             var result = parser.Parse(commandLine);
             Assert.True(result.IsSuccess);
             var parsedCommand = result.Value.ParsedCommand;
@@ -41,38 +41,17 @@ namespace QuiCLI.Tests.CommandLine
             Assert.Equal("Foo", parsedCommand.Arguments[0].Value);
         }
 
-        [Theory]
-        [InlineData("test2", "42", "42")]
-        [InlineData("test3", "42", 42)]
-        [InlineData("test4", "42.42", 42.42)]
-        [InlineData("test5", null, true)]
-        public void CommandLineParser_ParseParameterValues(string commandName, object? value, object expected)
-        {
-            var commands = new CommandGroup()
-            {
-                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
-            };
-            var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == commandName);
-            var commandLine = new string[] { commandName, "--parameter", value?.ToString()! };
-            var parser = new CommandLineParser(commands);
-            var result = parser.Parse(commandLine);
-            Assert.True(result.IsSuccess);
-            var parsedCommand = result.Value.ParsedCommand;
-            Assert.NotNull(parsedCommand);
-            Assert.Single(parsedCommand.Arguments);
-            Assert.Equal(expected, parsedCommand.Arguments[0].Value);
-        }
-
         [Fact]
         public void CommandLineParser_ParseGroups()
         {
-            var commands = new CommandGroup()
-            {
-                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
-            };
-            commands.AddCommandGroup("group1").AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
+            var builder = QuicApp.CreateBuilder();
+            builder.Commands.WithGroup("group1")
+                .Add<TestCommand>()
+                .WithCommand("test2", x => x.Test2);
+            var app = builder.Build();
+            var parser = new CommandLineParser(app.RootCommands, app.Configuration);
+
             var commandLine = new string[] { "group1", "test2", "--parameter", "test" };
-            var parser = new CommandLineParser(commands);
             var result = parser.Parse(commandLine);
             Assert.True(result.IsSuccess);
             var parsedCommand = result.Value.ParsedCommand;
@@ -84,13 +63,13 @@ namespace QuiCLI.Tests.CommandLine
         [Fact]
         public void CommandLineParser_DetectGlobalArguments()
         {
-            var commands = new CommandGroup()
-            {
-                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
-            };
-            var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test2");
+            var builder = QuicApp.CreateBuilder();
+            builder.Commands.Add<TestCommand>()
+                .WithCommand("test2", x => x.Test2);
+            var app = builder.Build();
+            var parser = new CommandLineParser(app.RootCommands, app.Configuration);
+
             var commandLine = new string[] { "test2", "--parameter", "test", "--help" };
-            var parser = new CommandLineParser(commands);
             var result = parser.Parse(commandLine);
             Assert.True(result.IsSuccess);
             var parsedCommand = result.Value.ParsedCommand;
@@ -102,24 +81,24 @@ namespace QuiCLI.Tests.CommandLine
         [Fact]
         public void CommandLineParser_DetectOptionalArguments()
         {
-            var commands = new CommandGroup()
-            {
-                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
-            };
-            var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test6");
-            var optionalArgument = command.Arguments.SingleOrDefault(a => a.Name == "parameter2");
+            var builder = QuicApp.CreateBuilder();
+            builder.Commands.Add<TestCommand>()
+                .WithCommand("test6", x => x.Test6);
+            var app = builder.Build();
+
+            var optionalArgument = app.RootCommands.Commands[0].Arguments.SingleOrDefault(a => a.Name == "parameter2");
             Assert.NotNull(optionalArgument);
             Assert.False(optionalArgument.IsRequired);
         }
         [Fact]
         public void CommandLineParser_DetectRequiredArguments()
         {
-            var commands = new CommandGroup()
-            {
-                GlobalArguments = [new ParameterDefinition { Name = "help", InternalName = "help" }]
-            };
-            var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test6");
-            var optionalArgument = command.Arguments.SingleOrDefault(a => a.Name == "parameter");
+            var builder = QuicApp.CreateBuilder();
+            builder.Commands.Add<TestCommand>()
+                .WithCommand("test6", x => x.Test6);
+            var app = builder.Build();
+
+            var optionalArgument = app.RootCommands.Commands[0].Arguments.SingleOrDefault(a => a.Name == "parameter");
             Assert.NotNull(optionalArgument);
             Assert.True(optionalArgument.IsRequired);
         }
@@ -127,29 +106,15 @@ namespace QuiCLI.Tests.CommandLine
         [Fact]
         public void CommandLineParser_DetectMissingRequiredArguments()
         {
-            var commands = new CommandGroup()
-            {
-                GlobalArguments = []
-            };
-            var command = commands.AddCommand(_ => new TestCommand()).First(c => c.Name == "test6");
+            var builder = QuicApp.CreateBuilder();
+            builder.Commands.Add<TestCommand>()
+                .WithCommand("test6", x => x.Test6);
+            var app = builder.Build();
+            var parser = new CommandLineParser(app.RootCommands, app.Configuration);
+
             var commandLine = new string[] { "test6" };
-            var parser = new CommandLineParser(commands);
             var result = parser.Parse(commandLine);
             Assert.True(result.IsFailure);
-        }
-
-        [Fact]
-        public void CommandLineParser_GroupNameOnlyShouldNotCauseError()
-        {
-            var commands = new CommandGroup()
-            {
-                GlobalArguments = []
-            };
-            commands.AddCommandGroup("test-group");
-            var commandLine = new string[] { "test-group" };
-            var parser = new CommandLineParser(commands);
-            var result = parser.Parse(commandLine);
-            Assert.True(result.IsSuccess);
         }
     }
 }

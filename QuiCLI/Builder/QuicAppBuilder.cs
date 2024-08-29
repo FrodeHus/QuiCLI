@@ -15,7 +15,6 @@ public class QuicAppBuilder
     public ICommandBuilder Commands { get; init; }
     public IServiceCollection Services { get; init; }
     public IQuicPipelineBuilder Pipeline { get; init; }
-    internal List<ParameterDefinition> GlobalArguments { get; init; } = [];
     
     public QuicAppBuilder()
     {
@@ -31,7 +30,7 @@ public class QuicAppBuilder
     internal void InitDefaultGlobalArguments()
     {
 
-        GlobalArguments.Add(new ParameterDefinition
+        Configuration.GlobalArguments.Add(new ParameterDefinition
         {
             Name = "help",
             InternalName = "help",
@@ -43,7 +42,7 @@ public class QuicAppBuilder
             ValueType = typeof(bool)
         });
 
-        GlobalArguments.Add(new ParameterDefinition
+        Configuration.GlobalArguments.Add(new ParameterDefinition
         {
             Name = "output",
             InternalName = "output",
@@ -60,15 +59,14 @@ public class QuicAppBuilder
     {
         var provider = Services.BuildServiceProvider();
 
-        var commands = ((IBuildCommands)Commands).Build();
+        var commandGroup = ((IBuildCommandGroup)Commands).Build();
 
         return new QuicApp
         {
             Configuration = Configuration,
             ServiceProvider = provider,
             Pipeline = Pipeline.Build(),
-            GlobalArguments = GlobalArguments,
-            RootCommands = new CommandGroup() { GlobalArguments = GlobalArguments, Commands = commands.ToList() }
+            RootCommands = commandGroup.First()
         };
     }
 }
