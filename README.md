@@ -10,7 +10,7 @@ Because of the restrictions imposed by trimming and AOT, the framework is design
 
 The framework is built on top of Microsoft.Extensions.DependencyInjection and Microsoft.Extensions.Configuration, which means that it is possible to use the same configuration and dependency injection system as in ASP.NET Core.
 
-As an example of an application that uses QuiCLI, see [SecurityCenterCLI](https://github.com/FrodeHus/SecurityCenterCLI).
+As an example of an application that uses QuiCLI, see [SecurityCenterCLI](https://github.com/FrodeHus/SecurityCenterCLI) and [RFDump](https://github.com/FrodeHus/RFDump).
 
 ## Features
 
@@ -24,7 +24,7 @@ As an example of an application that uses QuiCLI, see [SecurityCenterCLI](https:
 
 _Note:_ The framework is still in early development, and the API is subject to change.
 
-The only supported returns types for asynchronous commands are `Task<object>` and `Task` due to reflection restrictions.
+The only supported returns types for asynchronous commands are `Task<object>`, `Task<string>` and `Task` due to reflection restrictions. For synchronous commands, everything is supported.
 
 `dotnet add package QuiCLI`
 
