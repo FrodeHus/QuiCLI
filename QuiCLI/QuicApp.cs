@@ -18,21 +18,23 @@ public class QuicApp
     }
 
 
-    public void Run()
+    public int Run(string? commandLine = null)
     {
-        RunAsync().GetAwaiter().GetResult();
+        return RunAsync(commandLine).GetAwaiter().GetResult();
     }
-    public async Task RunAsync()
+    public async Task<int> RunAsync(string? commandLine = null)
     {
 
         var parser = new CommandLineParser(RootCommands, Configuration);
-        var result = parser.Parse(Environment.GetCommandLineArgs().Skip(1).ToArray());
+        var result = parser.Parse(commandLine is not null
+            ? commandLine.Split(' ')
+            : Environment.GetCommandLineArgs().Skip(1).ToArray());
         if (result.IsFailure)
         {
             Console.WriteLine(result.Error);
             var helpBuilder = new HelpBuilder(result.Value.CommandGroup ?? RootCommands, Configuration);
             Console.WriteLine(helpBuilder.BuildHelp());
-            Environment.Exit(1);
+            Environment.ExitCode = 1;
         }
         var command = result.Value.ParsedCommand;
         if (command is not null)
@@ -45,12 +47,13 @@ public class QuicApp
                 Console.WriteLine(context.CommandResult);
             }
 
-            Environment.Exit(executionResult);
+            Environment.ExitCode = executionResult;
         }
         else
         {
-            var helpBuilder = new HelpBuilder(result.Value.CommandGroup, Configuration);
+            var helpBuilder = new HelpBuilder(result.Value.CommandGroup!, Configuration);
             Console.WriteLine(helpBuilder.BuildHelp());
         }
+        return Environment.ExitCode;
     }
 }

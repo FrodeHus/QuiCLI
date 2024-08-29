@@ -1,13 +1,10 @@
-﻿using QuiCLI.Builder;
+﻿namespace QuiCLI.Middleware;
 
-namespace QuiCLI.Middleware
+internal class StringOutputFormatter(QuicMiddlewareDelegate next) : QuicMiddleware(next)
 {
-    internal class StringOutputFormatter(QuicMiddlewareDelegate next) : QuicMiddleware(next)
+    public override async ValueTask<int> OnExecute(QuicCommandContext context)
     {
-        public override async ValueTask<int> OnExecute(QuicCommandContext context)
-        {
-            context.CommandResult = context.CommandResult?.ToString();
-            return await Next(context);
-        }
+        context.CommandResult = context.CommandResult?.ToString();
+        return await Next(context);
     }
 }

@@ -39,5 +39,11 @@ namespace QuiCLI.Tests
         {
             return $"Hello, {parameter} {parameter2 ?? ""}!";
         }
+
+        public async Task<string> Test7()
+        {
+            await Task.Delay(1000);
+            return "Task completed!";
+        }
     }
 }
