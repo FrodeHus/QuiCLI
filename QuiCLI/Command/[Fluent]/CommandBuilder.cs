@@ -16,7 +16,7 @@ public sealed class CommandBuilder : ICommandBuilder, IBuildCommandGroup
         GroupName = groupName;
     }
 
-    ICommandState<TCommand> ICommandBuilder.Add<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TCommand>() where TCommand : class
+    ICommandState<TCommand> ICommandBuilder.Add<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.PublicConstructors)] TCommand>() where TCommand : class
     {
         _services.AddTransient<TCommand>();
         var state = new CommandBuilderState<TCommand>();
