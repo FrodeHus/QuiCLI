@@ -1,11 +1,13 @@
-﻿using QuiCLI.Common;
+﻿using QuiCLI.Builder;
+using QuiCLI.Common;
 
 namespace QuiCLI.Command;
 
-internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
+internal sealed class CommandLineParser(CommandGroup rootCommandGroup, Configuration configuration)
 {
     private const string LongOptionPrefix = "--";
     private const string ShortOptionPrefix = "-";
+    private readonly Configuration _configuration = configuration;
     private CommandGroup? _currentCommandGroup;
 
     public Result<(ParsedCommand? ParsedCommand, CommandGroup CommandGroup)> Parse(string[] args)
@@ -124,16 +126,14 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup)
         {
             return true;
         }
-        if (_currentCommandGroup != null)
-        {
 
-            var globalArgument = _currentCommandGroup.GlobalArguments.Find(argument => argument.Name == argumentName);
-            if (globalArgument != null)
-            {
-                argument = globalArgument;
-                return true;
-            }
+        var globalArgument = _configuration.GlobalArguments.Find(argument => argument.Name == argumentName);
+        if (globalArgument != null)
+        {
+            argument = globalArgument;
+            return true;
         }
+
         return false;
     }
 

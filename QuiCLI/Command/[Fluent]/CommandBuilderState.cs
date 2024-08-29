@@ -43,10 +43,6 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
             };
         }
     }
-    ICommandState<TCommand> ICommandState<TCommand>.WithGroup(string groupName)
-    {
-        throw new NotImplementedException();
-    }
 
     private IEnumerable<ParameterDefinition> GenerateParameterDefinitions(MethodInfo methodInfo)
     {

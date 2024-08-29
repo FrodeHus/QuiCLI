@@ -6,22 +6,22 @@ namespace QuiCLI.Help;
 
 internal class HelpBuilder(CommandGroup rootCommandGroup, Configuration configuration)
 {
-    private readonly CommandGroup rootCommandGroup = rootCommandGroup;
-    private readonly Configuration configuration = configuration;
+    private readonly CommandGroup _rootCommandGroup = rootCommandGroup;
+    private readonly Configuration _configuration = configuration;
 
     public string BuildHelp()
     {
         var sb = new StringBuilder();
-        if (configuration.CustomBanner is not null)
+        if (_configuration.CustomBanner is not null)
         {
-            sb.AppendLine(configuration.CustomBanner());
+            sb.AppendLine(_configuration.CustomBanner());
         }
-        var groupName = rootCommandGroup.Name ?? "";
+        var groupName = _rootCommandGroup.Name ?? "";
         sb.AppendLine("Usage:");
         sb.AppendLine($" {groupName} <command> [arguments]");
         sb.AppendLine();
         sb.AppendLine("Commands:");
-        foreach (var command in rootCommandGroup.Commands)
+        foreach (var command in _rootCommandGroup.Commands)
         {
             sb.Append($"\t{command.Name}");
             if (!string.IsNullOrWhiteSpace(command.Help))
@@ -35,21 +35,21 @@ internal class HelpBuilder(CommandGroup rootCommandGroup, Configuration configur
         }
 
         sb.AppendLine();
-        if (rootCommandGroup.SubGroups.Count > 0)
+        if (_rootCommandGroup.SubGroups.Count > 0)
         {
             sb.AppendLine("Nested Commands:");
-            foreach (var group in rootCommandGroup.SubGroups)
+            foreach (var group in _rootCommandGroup.SubGroups)
             {
                 sb.AppendLine($"\t{group.Key}");
             }
         }
-        if (rootCommandGroup.GlobalArguments.Count > 0)
+        if (_configuration.GlobalArguments.Count > 0)
         {
             sb.AppendLine();
             sb.AppendLine("Global Arguments:");
-            var maxArgLength = rootCommandGroup.GlobalArguments.Max(a => a.Name.Length);
+            var maxArgLength = _configuration.GlobalArguments.Max(a => a.Name.Length);
 
-            foreach (var argument in rootCommandGroup.GlobalArguments)
+            foreach (var argument in _configuration.GlobalArguments)
             {
                 sb.AppendLine($"\t--{argument.Name.PadRight(maxArgLength)}\t:\t{argument.Help}");
             }
@@ -60,9 +60,9 @@ internal class HelpBuilder(CommandGroup rootCommandGroup, Configuration configur
     public string BuildHelp(CommandDefinition commandDefinition)
     {
         var sb = new StringBuilder();
-        if (configuration.CustomBanner is not null)
+        if (_configuration.CustomBanner is not null)
         {
-            sb.AppendLine(configuration.CustomBanner());
+            sb.AppendLine(_configuration.CustomBanner());
         }
 
         sb.AppendLine($"Usage: {commandDefinition.Name}");
