@@ -33,7 +33,7 @@
         {
             return Arguments.Any(arg => arg.Name.Equals("help", StringComparison.OrdinalIgnoreCase)) ||
                 Definition
-                .Arguments
+                .Parameters
                 .Where(a => a.IsRequired && !a.IsGlobal)
                 .All(a => Arguments.Exists(arg => arg.Argument == a));
         }

@@ -1,4 +1,5 @@
 ﻿using QuiCLI.Builder;
+using QuiCLI.Command;
 
 namespace QuiCLI.Tests.Builder
 {
@@ -29,6 +30,20 @@ namespace QuiCLI.Tests.Builder
             Assert.Single(app.RootCommands.SubGroups);
             Assert.Equal("cmds", app.RootCommands.SubGroups.First().Key);
             Assert.Single(app.RootCommands.SubGroups.First().Value.Commands);
+        }
+
+        [Fact]
+        public void CommandBuilder_DetectFlagParameter()
+        {
+            var builder = QuicApp.CreateBuilder();
+            builder.Commands.Add<TestCommand>()
+                .WithCommand("test5", x => x.Test5);
+            var app = builder.Build();
+            var parser = new CommandLineParser(app.RootCommands, app.Configuration);
+            var definition = app.RootCommands.Commands[0];
+
+            Assert.True(definition.Parameters[0].IsFlag);
+            Assert.False(definition.Parameters[0].IsRequired);
         }
     }
 }

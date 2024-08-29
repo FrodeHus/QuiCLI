@@ -86,7 +86,7 @@ namespace QuiCLI.Tests.CommandLine
                 .WithCommand("test6", x => x.Test6);
             var app = builder.Build();
 
-            var optionalArgument = app.RootCommands.Commands[0].Arguments.SingleOrDefault(a => a.Name == "parameter2");
+            var optionalArgument = app.RootCommands.Commands[0].Parameters.SingleOrDefault(a => a.Name == "parameter2");
             Assert.NotNull(optionalArgument);
             Assert.False(optionalArgument.IsRequired);
         }
@@ -98,7 +98,7 @@ namespace QuiCLI.Tests.CommandLine
                 .WithCommand("test6", x => x.Test6);
             var app = builder.Build();
 
-            var optionalArgument = app.RootCommands.Commands[0].Arguments.SingleOrDefault(a => a.Name == "parameter");
+            var optionalArgument = app.RootCommands.Commands[0].Parameters.SingleOrDefault(a => a.Name == "parameter");
             Assert.NotNull(optionalArgument);
             Assert.True(optionalArgument.IsRequired);
         }
@@ -115,6 +115,36 @@ namespace QuiCLI.Tests.CommandLine
             var commandLine = new string[] { "test6" };
             var result = parser.Parse(commandLine);
             Assert.True(result.IsFailure);
+        }
+
+        [Fact]
+        public void CommandLineParser_ParseFlagParameterTrueWhenDefined()
+        {
+            var builder = QuicApp.CreateBuilder();
+            builder.Commands.Add<TestCommand>()
+                .WithCommand("test5", x => x.Test5);
+            var app = builder.Build();
+            var parser = new CommandLineParser(app.RootCommands, app.Configuration);
+
+            var commandLine = new string[] { "test5", "--parameter" };
+            var result = parser.Parse(commandLine);
+            var parsedCommand = result.Value.ParsedCommand;
+            Assert.True((bool)parsedCommand!.Arguments[0].Value);
+        }
+
+        [Fact]
+        public void CommandLineParser_ParseFlagParameterFalseWhenNotDefined()
+        {
+            var builder = QuicApp.CreateBuilder();
+            builder.Commands.Add<TestCommand>()
+                .WithCommand("test5", x => x.Test5);
+            var app = builder.Build();
+            var parser = new CommandLineParser(app.RootCommands, app.Configuration);
+
+            var commandLine = new string[] { "test5"};
+            var result = parser.Parse(commandLine);
+            var parsedCommand = result.Value.ParsedCommand;
+            Assert.False((bool)parsedCommand!.Arguments[0].Value);
         }
     }
 }

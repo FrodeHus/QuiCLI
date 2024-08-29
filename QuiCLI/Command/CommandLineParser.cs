@@ -62,8 +62,8 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup, Configura
 
     private static IEnumerable<ParameterValue> FillDefaultValues(CommandDefinition commandDefinition)
     {
-        return commandDefinition.Arguments
-            .Where(a => a.DefaultValue != null && !a.IsFlag)
+        return commandDefinition.Parameters
+            .Where(a => a.DefaultValue != null)
             .Select(a => new ParameterValue(a, a.DefaultValue!));
     }
 
@@ -122,7 +122,7 @@ internal sealed class CommandLineParser(CommandGroup rootCommandGroup, Configura
     {
         var argumentName = GetArgumentName(arg);
 
-        if (commandDefinition.TryGetArgument(argumentName, out argument))
+        if (commandDefinition.TryGetParameter(argumentName, out argument))
         {
             return true;
         }
