@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace QuiCLI.Command;
 
@@ -25,9 +26,32 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
         }
 
         var commandMethod = (MethodInfo)constant.Value!;
+        if(!CommandBuilderState<TCommand>.IsSupportedReturnType(commandMethod.ReturnType))
+        {
+            throw new ArgumentException("Method must return either Task, Task<string> or Task<object>");
+        }
         var parameters = GenerateParameterDefinitions(commandMethod);
         _commands.Add(commandName, commandMethod);
         return this;
+    }
+
+    private static bool IsSupportedReturnType(Type returnType)
+    {
+        if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Task<>))
+        {
+
+            return returnType switch
+            {
+                Type t when t == typeof(Task) => true,
+                Type t when t == typeof(Task<string>) => true,
+                Type t when t == typeof(Task<object>) => true,
+                _ => false
+            };
+        }
+        else
+        {
+            return true;
+        }
     }
 
     IEnumerable<object> IBuilderState.Build()
