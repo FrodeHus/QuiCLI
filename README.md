@@ -18,13 +18,15 @@ As an example of an application that uses QuiCLI, see [SecurityCenterCLI](https:
 - Command line argument parsing
 - Command line argument help generation
 - Command line argument type conversion
-- Command line argument default values
+- Nested command groups
 
 ## Quick start
 
 _Note:_ The framework is still in early development, and the API is subject to change.
 
 The only supported returns types for asynchronous commands are `Task<object>`, `Task<string>` and `Task` due to reflection restrictions. For synchronous commands, everything is supported.
+
+Registration of commands is explicit by design to make the code as efficient and clear as possible without heavy reflection usage.
 
 `dotnet add package QuiCLI`
 
