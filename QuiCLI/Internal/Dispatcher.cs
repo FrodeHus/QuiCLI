@@ -6,7 +6,7 @@ namespace QuiCLI.Internal
     {
         public static async Task<object?> InvokeAsync(object instance, ParsedCommand command)
         {
-            object?[]? parameters = GetParameters(command.Arguments, command.Definition.Arguments.Where(a => !a.IsGlobal).ToList());
+            object?[]? parameters = GetParameters(command.Arguments, command.Definition.Parameters.Where(a => !a.IsGlobal).ToList());
             var result = command.Definition.Method!.Invoke(instance, parameters);
             if (result is Task<object> taskObject)
             {

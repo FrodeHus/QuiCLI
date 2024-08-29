@@ -72,8 +72,8 @@ internal class HelpBuilder(CommandGroup rootCommandGroup, Configuration configur
         }
         sb.AppendLine();
         sb.AppendLine("Arguments:");
-        var maxArgLength = commandDefinition.Arguments.Max(a => a.Name.Length);
-        foreach (var argument in commandDefinition.Arguments.Where(a => !a.IsGlobal))
+        var maxArgLength = commandDefinition.Parameters.Max(a => a.Name.Length);
+        foreach (var argument in commandDefinition.Parameters.Where(a => !a.IsGlobal))
         {
             sb.Append($"\t--{argument.Name.PadRight(maxArgLength)}");
             sb.Append(argument.IsFlag ? "" : $"\t:\t<{argument.ValueType.Name}>");
@@ -90,12 +90,12 @@ internal class HelpBuilder(CommandGroup rootCommandGroup, Configuration configur
             sb.AppendLine();
         }
 
-        if (commandDefinition.Arguments.Any(a => a.IsGlobal))
+        if (commandDefinition.Parameters.Any(a => a.IsGlobal))
         {
             sb.AppendLine();
             sb.AppendLine("Global Arguments:");
 
-            foreach (var argument in commandDefinition.Arguments.Where(a => a.IsGlobal))
+            foreach (var argument in commandDefinition.Parameters.Where(a => a.IsGlobal))
             {
                 sb.AppendLine($"\t--{argument.Name.PadRight(maxArgLength)}\t:\t{argument.Help}");
             }

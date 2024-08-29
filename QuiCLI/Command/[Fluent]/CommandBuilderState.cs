@@ -38,7 +38,7 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
             var commandMethod = command.Value;
             yield return new CommandDefinition(commandName)
             {
-                Arguments = GenerateParameterDefinitions(commandMethod).ToList(),
+                Parameters = GenerateParameterDefinitions(commandMethod).ToList(),
                 Method = commandMethod,
             };
         }
@@ -59,8 +59,10 @@ internal sealed class CommandBuilderState<TCommand> : IBuilderState, ICommandSta
                 {
                     Name = ConvertCamelCaseToParameterName(parameter.Name!),
                     InternalName = parameter.Name!,
+                    ValueType = typeof(bool),
                     IsFlag = true,
-                    IsRequired = nullabilityInfo.WriteState is not NullabilityState.Nullable,
+                    IsRequired = false,
+                    DefaultValue = parameter.HasDefaultValue ? parameter.DefaultValue : false,
                     Help = parameterDescriptor?.Help
                 },
                 _ => new ParameterDefinition
