@@ -11,8 +11,19 @@ internal sealed class CommandDispatcher(QuicMiddlewareDelegate next) : QuicMiddl
     public override async ValueTask<int> OnExecute(QuicCommandContext context)
     {
         var (_, instance) = GetCommandInstance(context.Command, context.ServiceProvider);
-        var result = await GetCommandOutput(instance, context.Command, context.Configuration);
-        context.CommandResult = result;
+        context.CommandResult = await GetCommandOutput(instance, context.Command, context.Configuration);
+        if (context.CommandResult is IAsyncResult)
+        {
+            var resultProperty = context.CommandResult?.GetType().GetProperty("Result");
+            if (resultProperty is not null)
+            {
+                context.CommandResult = resultProperty?.GetValue(context.CommandResult);
+            }
+            else
+            {
+                throw new Exception("Command method returned async result, but could not determine value.");
+            }
+        }
         return await Next(context);
     }
 
