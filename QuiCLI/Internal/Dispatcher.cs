@@ -8,11 +8,10 @@ namespace QuiCLI.Internal
         {
             object?[]? parameters = GetParameters(command.Arguments, command.Definition.Parameters.Where(a => !a.IsGlobal).ToList());
             object? result;
-            if (command.Definition.Method!.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            var returnType = command.Definition.Method!.ReturnType;
+            if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Task<>))
             {
-                
-                result = await GetSupportedAsyncResult(instance, command, parameters);
-                return result;
+                return await GetSupportedAsyncResult(instance, command, parameters);
             }
 
             result = command.Definition.Method!.Invoke(instance, parameters);
